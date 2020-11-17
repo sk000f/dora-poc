@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/sk000f/metrix/pkg/collector/gitlab"
-	gogitlab "github.com/xanzy/go-gitlab"
+	gl "github.com/xanzy/go-gitlab"
 )
 
 func TestGitLabProjects(t *testing.T) {
@@ -21,17 +21,17 @@ func TestGitLabProjects(t *testing.T) {
 			fmt.Fprint(w, `[{"id":1}]`)
 		})
 
-		opt := &gogitlab.ListProjectsOptions{
-			ListOptions: gogitlab.ListOptions{2, 3},
-			Archived:    gogitlab.Bool(true),
-			OrderBy:     gogitlab.String("name"),
-			Sort:        gogitlab.String("asc"),
-			Search:      gogitlab.String("query"),
-			Simple:      gogitlab.Bool(true),
-			Visibility:  gogitlab.Visibility(gogitlab.PublicVisibility),
+		opt := &gl.ListProjectsOptions{
+			ListOptions: gl.ListOptions{2, 3},
+			Archived:    gl.Bool(true),
+			OrderBy:     gl.String("name"),
+			Sort:        gl.String("asc"),
+			Search:      gl.String("query"),
+			Simple:      gl.Bool(true),
+			Visibility:  gl.Visibility(gl.PublicVisibility),
 		}
 
-		want := []*gogitlab.Project{{ID: 1}}
+		want := []*gl.Project{{ID: 1}}
 		got, _, err := client.Projects.ListProjects(opt)
 		if err != nil {
 			t.Errorf("Error getting Projects: %v", err)
@@ -43,7 +43,7 @@ func TestGitLabProjects(t *testing.T) {
 	})
 }
 
-func setupMockGitLabClient(t *testing.T) (*http.ServeMux, *httptest.Server, *gogitlab.Client) {
+func setupMockGitLabClient(t *testing.T) (*http.ServeMux, *httptest.Server, *gl.Client) {
 
 	mux := http.NewServeMux()
 
