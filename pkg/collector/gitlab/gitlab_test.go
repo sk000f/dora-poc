@@ -21,18 +21,10 @@ func TestGitLabProjects(t *testing.T) {
 			fmt.Fprint(w, `[{"id":1}]`)
 		})
 
-		opt := &gl.ListProjectsOptions{
-			ListOptions: gl.ListOptions{2, 3},
-			Archived:    gl.Bool(true),
-			OrderBy:     gl.String("name"),
-			Sort:        gl.String("asc"),
-			Search:      gl.String("query"),
-			Simple:      gl.Bool(true),
-			Visibility:  gl.Visibility(gl.PublicVisibility),
-		}
+		want := []*gitlab.Project{{ID: 1}}
 
-		want := []*gl.Project{{ID: 1}}
-		got, _, err := client.Projects.ListProjects(opt)
+		got, err := gitlab.GetProjects(client, getProjectListOptions())
+
 		if err != nil {
 			t.Errorf("Error getting Projects: %v", err)
 		}
@@ -41,6 +33,18 @@ func TestGitLabProjects(t *testing.T) {
 			t.Errorf("got %+v; wanted %+v", got, want)
 		}
 	})
+}
+
+func getProjectListOptions() *gl.ListProjectsOptions {
+	return &gl.ListProjectsOptions{
+		ListOptions: gl.ListOptions{Page: 1, PerPage: 1},
+		Archived:    gl.Bool(true),
+		OrderBy:     gl.String("name"),
+		Sort:        gl.String("asc"),
+		Search:      gl.String("query"),
+		Simple:      gl.Bool(true),
+		Visibility:  gl.Visibility(gl.PublicVisibility),
+	}
 }
 
 func setupMockGitLabClient(t *testing.T) (*http.ServeMux, *httptest.Server, *gl.Client) {
