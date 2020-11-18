@@ -27,7 +27,7 @@ func GetProjects(client *gl.Client, opt *gl.ListProjectsOptions) ([]*Project, er
 }
 
 // SetupClient returns a GitLab client with the specified base URL
-func SetupClient(baseURL, token string) (*gl.Client, error) {
+func SetupClient(token, baseURL string) (*gl.Client, error) {
 	client, err := gl.NewClient(token, gl.WithBaseURL(baseURL))
 	if err != nil {
 		return nil, err
