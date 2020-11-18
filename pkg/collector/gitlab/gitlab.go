@@ -15,7 +15,12 @@ func GetProjects(client *gl.Client, opt *gl.ListProjectsOptions) ([]*Project, er
 	// iterate over projects and convert to metrix representation
 	p := []*Project{}
 	for _, pr := range projects {
-		p = append(p, &Project{ID: pr.ID})
+		p = append(p, &Project{
+			ID:                pr.ID,
+			Name:              pr.Name,
+			NameWithNamespace: pr.NameWithNamespace,
+			WebURL:            pr.WebURL,
+		})
 	}
 
 	return p, nil
@@ -33,5 +38,8 @@ func SetupClient(baseURL string) (*gl.Client, error) {
 
 // Project represents metrix view of a GitLab project object
 type Project struct {
-	ID int
+	ID                int
+	Name              string
+	NameWithNamespace string
+	WebURL            string
 }

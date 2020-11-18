@@ -18,10 +18,10 @@ func TestGitLabProjects(t *testing.T) {
 		defer teardown(server)
 
 		mux.HandleFunc("/api/v4/projects", func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprint(w, `[{"id":1}]`)
+			fmt.Fprint(w, `[{"id": 1, "name": "test", "name_with_namespace": "test/test", "web_url": "http://test.com/test/test"}]`)
 		})
 
-		want := []*gitlab.Project{{ID: 1}}
+		want := []*gitlab.Project{{ID: 1, Name: "test", NameWithNamespace: "test/test", WebURL: "http://test.com/test/test"}}
 
 		got, err := gitlab.GetProjects(client, getProjectListOptions())
 
