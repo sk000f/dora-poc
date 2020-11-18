@@ -53,7 +53,7 @@ func setupMockGitLabClient(t *testing.T) (*http.ServeMux, *httptest.Server, *gl.
 
 	server := httptest.NewServer(mux)
 
-	client, err := gitlab.SetupClient(server.URL)
+	client, err := gitlab.SetupClient(server.URL, "")
 	if err != nil {
 		server.Close()
 		t.Fatalf("Error creating mock GitLab client: %v", err)
