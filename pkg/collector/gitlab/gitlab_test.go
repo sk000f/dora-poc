@@ -39,7 +39,7 @@ func getProjectListOptions() *gl.ListProjectsOptions {
 	return &gl.ListProjectsOptions{
 		ListOptions: gl.ListOptions{Page: 1, PerPage: 1},
 		Archived:    gl.Bool(true),
-		OrderBy:     gl.String("name"),
+		OrderBy:     gl.String("id"),
 		Sort:        gl.String("asc"),
 		Search:      gl.String("query"),
 		Simple:      gl.Bool(true),
