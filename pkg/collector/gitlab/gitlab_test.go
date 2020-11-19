@@ -12,7 +12,7 @@ import (
 )
 
 func TestGitLabProjects(t *testing.T) {
-	t.Run("get Projects from GitLab", func(t *testing.T) {
+	t.Run("get single Project from GitLab", func(t *testing.T) {
 
 		mux, server, client := setupMockGitLabClient(t)
 		defer teardown(server)
@@ -24,7 +24,50 @@ func TestGitLabProjects(t *testing.T) {
 		want := []*gitlab.Project{{ID: 1, Name: "test", NameWithNamespace: "test/test", WebURL: "http://test.com/test/test"}}
 
 		got, err := gitlab.GetProjects(client, getProjectListOptions())
+		if err != nil {
+			t.Errorf("Error getting Projects: %v", err)
+		}
 
+		if !reflect.DeepEqual(got, want) {
+			t.Errorf("got %+v; wanted %+v", got, want)
+		}
+	})
+
+	t.Run("get multiple pages of Projects from GitLab", func(t *testing.T) {
+		mux, server, client := setupMockGitLabClient(t)
+		defer teardown(server)
+
+		mux.HandleFunc("/api/v4/projects", func(w http.ResponseWriter, r *http.Request) {
+
+			if r.URL.Query()["page"][0] == "1" {
+				w.Header().Set("X-Page", "1")
+				w.Header().Set("X-Total-Pages", "2")
+				w.Header().Set("X-Next-Page", "2")
+				fmt.Fprint(w, `[
+				{"id": 1, "name": "test", "name_with_namespace": "test/test", "web_url": "http://test.com/test/test"}
+				]`)
+			}
+
+			if r.URL.Query()["page"][0] == "2" {
+				w.Header().Set("X-Page", "2")
+				w.Header().Set("X-Total-Pages", "2")
+				w.Header().Set("X-Next-Page", "2")
+				fmt.Fprint(w, `[
+				{"id": 2, "name": "test", "name_with_namespace": "test/test", "web_url": "http://test.com/test/test"},
+				{"id": 3, "name": "test", "name_with_namespace": "test/test", "web_url": "http://test.com/test/test"}
+				]`)
+			}
+		})
+
+		want := []*gitlab.Project{
+			{ID: 1, Name: "test", NameWithNamespace: "test/test", WebURL: "http://test.com/test/test"},
+			{ID: 2, Name: "test", NameWithNamespace: "test/test", WebURL: "http://test.com/test/test"},
+			{ID: 3, Name: "test", NameWithNamespace: "test/test", WebURL: "http://test.com/test/test"},
+		}
+
+		opt := getProjectListOptions()
+
+		got, err := gitlab.GetProjects(client, opt)
 		if err != nil {
 			t.Errorf("Error getting Projects: %v", err)
 		}
