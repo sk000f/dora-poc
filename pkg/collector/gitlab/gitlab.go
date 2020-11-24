@@ -1,8 +1,6 @@
 package gitlab
 
 import (
-	"fmt"
-
 	gl "github.com/xanzy/go-gitlab"
 )
 
@@ -26,8 +24,6 @@ func GetProjects(client *gl.Client, opt *gl.ListProjectsOptions) ([]*Project, er
 				WebURL:            pr.WebURL,
 			})
 		}
-
-		fmt.Printf("Page: %v, TotalPages: %v, NextPage: %v", opt.Page, resp.TotalPages, resp.NextPage)
 
 		// Exit the loop when we've seen all pages.
 		if resp.CurrentPage >= resp.TotalPages {
