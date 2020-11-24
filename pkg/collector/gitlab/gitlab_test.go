@@ -78,6 +78,28 @@ func TestGitLabProjects(t *testing.T) {
 	})
 }
 
+func TestGitLabDeploymemts(t *testing.T) {
+	t.Run("get all deployments from GitLab", func(t *testing.T) {
+		mux, server, client := setupMockGitLabClient(t)
+		defer teardown(server)
+
+		mux.HandleFunc("/api/v4/projects/1/deployments", func(w http.ResponseWriter, r *http.Request) {
+			fmt.Fprint(w, `[{"id": 1, "environment": {"name": "production"}, "deployable": {"status": "success", "pipeline": {"id": 1}}}]`)
+		})
+
+		want := []*gitlab.Deployment{{ID: 1, Status: "success", EnvironmentName: "production", PipelineID: 1}}
+
+		got, err := gitlab.GetDeployments(1, client, getDeploymentListOptions())
+		if err != nil {
+			t.Errorf("Error getting Deployments: %v", err)
+		}
+
+		if !reflect.DeepEqual(got, want) {
+			t.Errorf("got %+v; wanted %+v", got, want)
+		}
+	})
+}
+
 func getProjectListOptions() *gl.ListProjectsOptions {
 	return &gl.ListProjectsOptions{
 		ListOptions: gl.ListOptions{Page: 1, PerPage: 1},
@@ -87,6 +109,16 @@ func getProjectListOptions() *gl.ListProjectsOptions {
 		Search:      gl.String("query"),
 		Simple:      gl.Bool(true),
 		Visibility:  gl.Visibility(gl.PublicVisibility),
+	}
+}
+
+func getDeploymentListOptions() *gl.ListProjectDeploymentsOptions {
+	return &gl.ListProjectDeploymentsOptions{
+		ListOptions: gl.ListOptions{Page: 1, PerPage: 1},
+		OrderBy:     gl.String("id"),
+		Sort:        gl.String("asc"),
+		Environment: gl.String("production"),
+		Status:      gl.String("success"),
 	}
 }
 

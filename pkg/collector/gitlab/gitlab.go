@@ -40,6 +40,38 @@ func GetProjects(client *gl.Client, opt *gl.ListProjectsOptions) ([]*Project, er
 	return p, nil
 }
 
+// GetDeployments lists all Deployments for the specified Project
+func GetDeployments(pid int, client *gl.Client, opt *gl.ListProjectDeploymentsOptions) ([]*Deployment, error) {
+	d := []*Deployment{}
+
+	for {
+		deployments, resp, err := client.Deployments.ListProjectDeployments(pid, opt)
+		if err != nil {
+			return nil, err
+		}
+
+		// iterate over deployments and convert to metrix representation
+		for _, dep := range deployments {
+			d = append(d, &Deployment{
+				ID:              dep.ID,
+				Status:          dep.Deployable.Status,
+				EnvironmentName: dep.Environment.Name,
+				PipelineID:      dep.Deployable.Pipeline.ID,
+			})
+
+			// Exit the loop when we've seen all pages.
+			if resp.CurrentPage >= resp.TotalPages {
+				break
+			}
+
+			opt.Page = resp.NextPage
+		}
+
+		return d, nil
+	}
+
+}
+
 // SetupClient returns a GitLab client with the specified base URL
 func SetupClient(token, baseURL string) (*gl.Client, error) {
 	client, err := gl.NewClient(token, gl.WithBaseURL(baseURL))
@@ -56,4 +88,12 @@ type Project struct {
 	Name              string
 	NameWithNamespace string
 	WebURL            string
+}
+
+// Deployment represents metrix view of a GitLab deployment object
+type Deployment struct {
+	ID              int
+	Status          string
+	EnvironmentName string
+	PipelineID      int
 }
