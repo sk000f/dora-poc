@@ -8,7 +8,7 @@ type Service struct {
 
 // CIServer provides functionality for getting data from CI server
 type CIServer interface {
-	GetUpdatedData()
+	RefreshData(r Repository)
 }
 
 // Repository provides access to data storage
@@ -23,6 +23,5 @@ func NewService(ci CIServer, r Repository) *Service {
 
 // RefreshData collects data from CI server and saves in data repository
 func (s *Service) RefreshData() {
-	s.ci.GetUpdatedData()
-	s.r.SaveData()
+	s.ci.RefreshData(s.r)
 }
