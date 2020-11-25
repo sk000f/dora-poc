@@ -18,10 +18,21 @@ func TestGitLabProjects(t *testing.T) {
 		defer teardown(server)
 
 		mux.HandleFunc("/api/v4/projects", func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprint(w, `[{"id": 1, "name": "test", "name_with_namespace": "test/test", "web_url": "http://test.com/test/test"}]`)
+			fmt.Fprint(w, `[{
+					"id": 1, 
+					"name": "test", 
+					"name_with_namespace": "test/test", 
+					"web_url": "http://test.com/test/test"
+					}]`)
 		})
 
-		want := []*gitlab.Project{{ID: 1, Name: "test", NameWithNamespace: "test/test", WebURL: "http://test.com/test/test"}}
+		want := []*gitlab.Project{
+			{
+				ID:                1,
+				Name:              "test",
+				NameWithNamespace: "test/test",
+				WebURL:            "http://test.com/test/test",
+			}}
 
 		got, err := gitlab.GetProjects(client, getProjectListOptions())
 		if err != nil {
@@ -43,8 +54,11 @@ func TestGitLabProjects(t *testing.T) {
 				w.Header().Set("X-Page", "1")
 				w.Header().Set("X-Total-Pages", "2")
 				w.Header().Set("X-Next-Page", "2")
-				fmt.Fprint(w, `[
-				{"id": 1, "name": "test", "name_with_namespace": "test/test", "web_url": "http://test.com/test/test"}
+				fmt.Fprint(w, `[{
+					"id": 1, 
+					"name": "test", 
+					"name_with_namespace": "test/test", 
+					"web_url": "http://test.com/test/test"}
 				]`)
 			}
 
@@ -53,16 +67,41 @@ func TestGitLabProjects(t *testing.T) {
 				w.Header().Set("X-Total-Pages", "2")
 				w.Header().Set("X-Next-Page", "2")
 				fmt.Fprint(w, `[
-				{"id": 2, "name": "test", "name_with_namespace": "test/test", "web_url": "http://test.com/test/test"},
-				{"id": 3, "name": "test", "name_with_namespace": "test/test", "web_url": "http://test.com/test/test"}
+				{
+					"id": 2, 
+					"name": "test", 
+					"name_with_namespace": "test/test", 
+					"web_url": "http://test.com/test/test"
+				},
+				{
+					"id": 3, 
+					"name": "test", 
+					"name_with_namespace": "test/test", 
+					"web_url": "http://test.com/test/test"
+				}
 				]`)
 			}
 		})
 
 		want := []*gitlab.Project{
-			{ID: 1, Name: "test", NameWithNamespace: "test/test", WebURL: "http://test.com/test/test"},
-			{ID: 2, Name: "test", NameWithNamespace: "test/test", WebURL: "http://test.com/test/test"},
-			{ID: 3, Name: "test", NameWithNamespace: "test/test", WebURL: "http://test.com/test/test"},
+			{
+				ID:                1,
+				Name:              "test",
+				NameWithNamespace: "test/test",
+				WebURL:            "http://test.com/test/test",
+			},
+			{
+				ID:                2,
+				Name:              "test",
+				NameWithNamespace: "test/test",
+				WebURL:            "http://test.com/test/test",
+			},
+			{
+				ID:                3,
+				Name:              "test",
+				NameWithNamespace: "test/test",
+				WebURL:            "http://test.com/test/test",
+			},
 		}
 
 		opt := getProjectListOptions()
@@ -84,10 +123,26 @@ func TestGitLabDeploymemts(t *testing.T) {
 		defer teardown(server)
 
 		mux.HandleFunc("/api/v4/projects/1/deployments", func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprint(w, `[{"id": 1, "environment": {"name": "production"}, "deployable": {"status": "success", "pipeline": {"id": 1}}}]`)
+			fmt.Fprint(w, `[{
+				"id": 1, 
+				"environment": {
+					"name": "production"
+					}, 
+					"deployable": {
+						"status": "success", 
+						"pipeline": {
+							"id": 1
+						}
+					}
+				}]`)
 		})
 
-		want := []*gitlab.Deployment{{ID: 1, Status: "success", EnvironmentName: "production", PipelineID: 1}}
+		want := []*gitlab.Deployment{{
+			ID:              1,
+			Status:          "success",
+			EnvironmentName: "production",
+			PipelineID:      1,
+		}}
 
 		got, err := gitlab.GetDeployments(1, client, getDeploymentListOptions())
 		if err != nil {
