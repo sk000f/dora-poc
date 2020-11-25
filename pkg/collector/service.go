@@ -13,7 +13,8 @@ type CIServer interface {
 
 // Repository provides access to data storage
 type Repository interface {
-	SaveData()
+	SaveProject()
+	SaveDeployment()
 }
 
 // NewService creates a collector with required dependencies
