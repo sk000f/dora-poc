@@ -1,13 +1,51 @@
 package gitlab
 
 import (
+	"github.com/sk000f/metrix/pkg/collector"
+	"github.com/xanzy/go-gitlab"
 	gl "github.com/xanzy/go-gitlab"
 )
 
-// GetProjects lists all projects from specified GitLab server
-func GetProjects(client *gl.Client, opt *gl.ListProjectsOptions) ([]*Project, error) {
+// RefreshData gets latest deployment data from CI server and saves to repository
+func RefreshData(c *gl.Client, r collector.Repository) {
 
-	p := []*Project{}
+	p := UpdateProjects(c, r)
+
+	UpdateDeployments(p, c, r)
+
+}
+
+// UpdateProjects gets all projects from GitLab and stores them in the repository
+func UpdateProjects(c *gitlab.Client, r collector.Repository) []*collector.Project {
+
+	// get all projects
+	p, err := GetProjects(c, nil)
+	if err != nil {
+
+	}
+
+	// save projects to repository
+	r.SaveProjects(p)
+
+	return p
+}
+
+// UpdateDeployments gets deployments for all projects from GitLab and stores them in the repository
+func UpdateDeployments(p []*collector.Project, c *gitlab.Client, r collector.Repository) {
+
+	// get and update deployments for projects
+	for _, proj := range p {
+		d, _ := GetDeployments(proj.ID, c, nil)
+		for _, dep := range d {
+			r.SaveDeployment(dep)
+		}
+	}
+}
+
+// GetProjects lists all projects from specified GitLab server
+func GetProjects(client *gl.Client, opt *gl.ListProjectsOptions) ([]*collector.Project, error) {
+
+	p := []*collector.Project{}
 
 	for {
 		projects, resp, err := client.Projects.ListProjects(opt)
@@ -17,7 +55,7 @@ func GetProjects(client *gl.Client, opt *gl.ListProjectsOptions) ([]*Project, er
 
 		// iterate over projects and convert to metrix representation
 		for _, pr := range projects {
-			p = append(p, &Project{
+			p = append(p, &collector.Project{
 				ID:                pr.ID,
 				Name:              pr.Name,
 				NameWithNamespace: pr.NameWithNamespace,
@@ -37,8 +75,8 @@ func GetProjects(client *gl.Client, opt *gl.ListProjectsOptions) ([]*Project, er
 }
 
 // GetDeployments lists all Deployments for the specified Project
-func GetDeployments(pid int, client *gl.Client, opt *gl.ListProjectDeploymentsOptions) ([]*Deployment, error) {
-	d := []*Deployment{}
+func GetDeployments(pid int, client *gl.Client, opt *gl.ListProjectDeploymentsOptions) ([]*collector.Deployment, error) {
+	d := []*collector.Deployment{}
 
 	for {
 		deployments, resp, err := client.Deployments.ListProjectDeployments(pid, opt)
@@ -48,7 +86,7 @@ func GetDeployments(pid int, client *gl.Client, opt *gl.ListProjectDeploymentsOp
 
 		// iterate over deployments and convert to metrix representation
 		for _, dep := range deployments {
-			d = append(d, &Deployment{
+			d = append(d, &collector.Deployment{
 				ID:              dep.ID,
 				Status:          dep.Deployable.Status,
 				EnvironmentName: dep.Environment.Name,
@@ -76,20 +114,4 @@ func SetupClient(token, baseURL string) (*gl.Client, error) {
 	}
 
 	return client, nil
-}
-
-// Project represents metrix view of a GitLab project object
-type Project struct {
-	ID                int
-	Name              string
-	NameWithNamespace string
-	WebURL            string
-}
-
-// Deployment represents metrix view of a GitLab deployment object
-type Deployment struct {
-	ID              int
-	Status          string
-	EnvironmentName string
-	PipelineID      int
 }

@@ -7,6 +7,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/sk000f/metrix/pkg/collector"
 	"github.com/sk000f/metrix/pkg/collector/gitlab"
 	gl "github.com/xanzy/go-gitlab"
 )
@@ -26,7 +27,7 @@ func TestGitLabProjects(t *testing.T) {
 					}]`)
 		})
 
-		want := []*gitlab.Project{
+		want := []*collector.Project{
 			{
 				ID:                1,
 				Name:              "test",
@@ -83,7 +84,7 @@ func TestGitLabProjects(t *testing.T) {
 			}
 		})
 
-		want := []*gitlab.Project{
+		want := []*collector.Project{
 			{
 				ID:                1,
 				Name:              "test",
@@ -137,7 +138,7 @@ func TestGitLabDeploymemts(t *testing.T) {
 				}]`)
 		})
 
-		want := []*gitlab.Deployment{{
+		want := []*collector.Deployment{{
 			ID:              1,
 			Status:          "success",
 			EnvironmentName: "production",
