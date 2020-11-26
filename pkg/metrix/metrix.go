@@ -33,9 +33,6 @@ func SetupConfig() *Config {
 	cfg.GitLabURL = os.Getenv("METRIX_GITLAB_URL")
 	cfg.GitLabToken = os.Getenv("METRIX_GITLAB_TOKEN")
 
-	fmt.Println(cfg.GitLabURL)
-	fmt.Println(cfg.GitLabToken)
-
 	return cfg
 }
 
