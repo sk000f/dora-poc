@@ -116,9 +116,40 @@ func TestGitLabProjects(t *testing.T) {
 			t.Errorf("got %+v; wanted %+v", got, want)
 		}
 	})
+
+	t.Run("update projects in repository", func(t *testing.T) {
+
+		mux, server, client := setupMockGitLabClient(t)
+		defer teardown(server)
+
+		mux.HandleFunc("/api/v4/projects", func(w http.ResponseWriter, r *http.Request) {
+			fmt.Fprint(w, `[{
+					"id": 1, 
+					"name": "test", 
+					"name_with_namespace": "test/test", 
+					"web_url": "http://test.com/test/test"
+					}]`)
+		})
+
+		mockRepository := new(mockRepo)
+
+		want := []*collector.Project{
+			{
+				ID:                1,
+				Name:              "test",
+				NameWithNamespace: "test/test",
+				WebURL:            "http://test.com/test/test",
+			}}
+
+		gitlab.UpdateProjects(client, mockRepository)
+
+		if !reflect.DeepEqual(mockRepository.ProjectData, want) {
+			t.Errorf("got %+v; wanted %+v", mockRepository.ProjectData, want)
+		}
+	})
 }
 
-func TestGitLabDeploymemts(t *testing.T) {
+func TestGitLabDeployments(t *testing.T) {
 	t.Run("get all deployments from GitLab", func(t *testing.T) {
 		mux, server, client := setupMockGitLabClient(t)
 		defer teardown(server)
@@ -152,6 +183,50 @@ func TestGitLabDeploymemts(t *testing.T) {
 
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("got %+v; wanted %+v", got, want)
+		}
+	})
+
+	t.Run("update deployment in repository", func(t *testing.T) {
+
+		mux, server, client := setupMockGitLabClient(t)
+		defer teardown(server)
+
+		mux.HandleFunc("/api/v4/projects/1/deployments", func(w http.ResponseWriter, r *http.Request) {
+			fmt.Fprint(w, `[{
+				"id": 1, 
+				"environment": {
+					"name": "production"
+					}, 
+					"deployable": {
+						"status": "success", 
+						"pipeline": {
+							"id": 1
+						}
+					}
+				}]`)
+		})
+
+		mockRepository := new(mockRepo)
+
+		p := []*collector.Project{
+			{
+				ID:                1,
+				Name:              "test",
+				NameWithNamespace: "test/test",
+				WebURL:            "http://test.com/test/test",
+			}}
+
+		want := []*collector.Deployment{{
+			ID:              1,
+			Status:          "success",
+			EnvironmentName: "production",
+			PipelineID:      1,
+		}}
+
+		gitlab.UpdateDeployments(p, client, mockRepository)
+
+		if !reflect.DeepEqual(mockRepository.DeploymentData, want) {
+			t.Errorf("got %+v; wanted %+v", mockRepository.DeploymentData, want)
 		}
 	})
 }
@@ -191,6 +266,21 @@ func setupMockGitLabClient(t *testing.T) (*http.ServeMux, *httptest.Server, *gl.
 	}
 
 	return mux, server, client
+}
+
+type mockRepo struct {
+	ProjectData    []*collector.Project
+	DeploymentData []*collector.Deployment
+}
+
+func (m *mockRepo) SaveProjects(p []*collector.Project) {
+	for _, proj := range p {
+		m.ProjectData = append(m.ProjectData, proj)
+	}
+}
+
+func (m *mockRepo) SaveDeployment(d *collector.Deployment) {
+	m.DeploymentData = append(m.DeploymentData, d)
 }
 
 func teardown(server *httptest.Server) {
