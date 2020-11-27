@@ -304,6 +304,22 @@ func TestGitLabDeployments(t *testing.T) {
 	})
 }
 
+func TestRefreshData(t *testing.T) {
+	t.Run("refresh data successfully", func(t *testing.T) {
+
+		_, _, _, g := setupMockGitLabClient(t)
+
+		r := new(mockRepo)
+
+		err := g.RefreshData(r)
+
+		if err != nil {
+			t.Errorf("Unexpected error: %v", err.Error())
+		}
+
+	})
+}
+
 func getProjectListOptions() *gl.ListProjectsOptions {
 	return &gl.ListProjectsOptions{
 		ListOptions: gl.ListOptions{Page: 1, PerPage: 1},
