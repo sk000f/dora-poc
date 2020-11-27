@@ -23,18 +23,6 @@ func Start() {
 	c := collector.NewService(gl, r)
 
 	c.RefreshData()
-
-	// client, err := gitlab.SetupClient(cfg.GitLabToken, cfg.GitLabURL)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// projects, _, err := client.Projects.ListProjects(nil)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// fmt.Println(projects)
 }
 
 // SetupConfig configures application based on environment variables
