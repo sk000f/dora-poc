@@ -186,6 +186,79 @@ func TestGitLabDeployments(t *testing.T) {
 		}
 	})
 
+	t.Run("get multiple pages of deployments from GitLab", func(t *testing.T) {
+
+		mux, server, client, g := setupMockGitLabClient(t)
+		defer teardown(server)
+
+		mux.HandleFunc("/api/v4/projects/1/deployments", func(w http.ResponseWriter, r *http.Request) {
+
+			if r.URL.Query()["page"][0] == "1" {
+				w.Header().Set("X-Page", "1")
+				w.Header().Set("X-Total-Pages", "2")
+				w.Header().Set("X-Next-Page", "2")
+				fmt.Fprint(w, `[{
+					"id": 1, 
+					"environment": {
+						"name": "production"
+						}, 
+						"deployable": {
+							"status": "success", 
+							"pipeline": {
+								"id": 1
+							}
+						}
+					}
+					]`)
+			}
+
+			if r.URL.Query()["page"][0] == "2" {
+				w.Header().Set("X-Page", "2")
+				w.Header().Set("X-Total-Pages", "2")
+				w.Header().Set("X-Next-Page", "2")
+				fmt.Fprint(w, `[{
+					"id": 2, 
+					"environment": {
+						"name": "production"
+						}, 
+						"deployable": {
+							"status": "success", 
+							"pipeline": {
+								"id": 2
+							}
+						}
+					}
+					]`)
+			}
+		})
+
+		want := []*collector.Deployment{
+			{
+				ID:              1,
+				Status:          "success",
+				EnvironmentName: "production",
+				PipelineID:      1,
+			},
+			{
+				ID:              2,
+				Status:          "success",
+				EnvironmentName: "production",
+				PipelineID:      2,
+			},
+		}
+
+		opt := getDeploymentListOptions()
+
+		got, err := g.GetDeployments(1, client, opt)
+		if err != nil {
+			t.Errorf("Error getting Deployments: %v", err)
+		}
+
+		if !reflect.DeepEqual(got, want) {
+			t.Errorf("got %+v; wanted %+v", got, want)
+		}
+	})
+
 	t.Run("update deployment in repository", func(t *testing.T) {
 
 		mux, server, client, g := setupMockGitLabClient(t)
@@ -234,20 +307,13 @@ func TestGitLabDeployments(t *testing.T) {
 func getProjectListOptions() *gl.ListProjectsOptions {
 	return &gl.ListProjectsOptions{
 		ListOptions: gl.ListOptions{Page: 1, PerPage: 1},
-		Archived:    gl.Bool(false),
-		OrderBy:     gl.String("id"),
-		Sort:        gl.String("asc"),
-		Search:      gl.String("query"),
 		Simple:      gl.Bool(false),
-		Visibility:  gl.Visibility(gl.PublicVisibility),
 	}
 }
 
 func getDeploymentListOptions() *gl.ListProjectDeploymentsOptions {
 	return &gl.ListProjectDeploymentsOptions{
 		ListOptions: gl.ListOptions{Page: 1, PerPage: 1},
-		OrderBy:     gl.String("id"),
-		Sort:        gl.String("asc"),
 		Environment: gl.String("production"),
 		Status:      gl.String("success"),
 	}

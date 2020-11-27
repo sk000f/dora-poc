@@ -1,6 +1,7 @@
 package metrix
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/sk000f/metrix/pkg/collector"
@@ -9,7 +10,7 @@ import (
 )
 
 // Start initialises and configures the application
-func Start() {
+func Start() error {
 
 	cfg := SetupConfig()
 
@@ -22,7 +23,13 @@ func Start() {
 
 	c := collector.NewService(gl, r)
 
-	c.RefreshData()
+	err := c.RefreshData()
+	if err != nil {
+		fmt.Printf("Error: %v", err.Error())
+		return err
+	}
+
+	return nil
 }
 
 // SetupConfig configures application based on environment variables

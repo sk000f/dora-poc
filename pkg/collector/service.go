@@ -1,5 +1,7 @@
 package collector
 
+import "fmt"
+
 // Service provides functionality for updating CI data
 type Service struct {
 	ci CIServer
@@ -8,7 +10,7 @@ type Service struct {
 
 // CIServer provides functionality for getting data from CI server
 type CIServer interface {
-	RefreshData(r Repository)
+	RefreshData(r Repository) error
 }
 
 // Repository provides access to data storage
@@ -39,6 +41,11 @@ func NewService(ci CIServer, r Repository) *Service {
 }
 
 // RefreshData collects data from CI server and saves in data repository
-func (s *Service) RefreshData() {
-	s.ci.RefreshData(s.r)
+func (s *Service) RefreshData() error {
+	err := s.ci.RefreshData(s.r)
+	if err != nil {
+		fmt.Printf("Error: %v", err.Error())
+		return err
+	}
+	return nil
 }

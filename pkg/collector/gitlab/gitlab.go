@@ -14,17 +14,19 @@ type GitLab struct {
 }
 
 // RefreshData gets latest deployment data from CI server and saves to repository
-func (g *GitLab) RefreshData(r collector.Repository) {
+func (g *GitLab) RefreshData(r collector.Repository) error {
 
 	c, err := g.SetupClient(g.Token, g.URL)
 	if err != nil {
 		fmt.Printf("Error: %v", err.Error())
+		return err
 	}
 
 	p := g.UpdateProjects(c, r)
 
 	g.UpdateDeployments(p, c, r)
 
+	return nil
 }
 
 // UpdateProjects gets all projects from GitLab and stores them in the repository
@@ -60,6 +62,7 @@ func (g *GitLab) GetProjects(client *gl.Client, opt *gl.ListProjectsOptions) ([]
 	p := []*collector.Project{}
 
 	for {
+
 		projects, resp, err := client.Projects.ListProjects(opt)
 		if err != nil {
 			fmt.Printf("Error: %v", err.Error())
@@ -89,11 +92,14 @@ func (g *GitLab) GetProjects(client *gl.Client, opt *gl.ListProjectsOptions) ([]
 
 // GetDeployments lists all Deployments for the specified Project
 func (g *GitLab) GetDeployments(pid int, client *gl.Client, opt *gl.ListProjectDeploymentsOptions) ([]*collector.Deployment, error) {
+
 	d := []*collector.Deployment{}
 
 	for {
+
 		deployments, resp, err := client.Deployments.ListProjectDeployments(pid, opt)
 		if err != nil {
+			fmt.Printf("Error: %v", err.Error())
 			return nil, err
 		}
 
@@ -105,18 +111,17 @@ func (g *GitLab) GetDeployments(pid int, client *gl.Client, opt *gl.ListProjectD
 				EnvironmentName: dep.Environment.Name,
 				PipelineID:      dep.Deployable.Pipeline.ID,
 			})
-
-			// Exit the loop when we've seen all pages.
-			if resp.CurrentPage >= resp.TotalPages {
-				break
-			}
-
-			opt.Page = resp.NextPage
 		}
 
-		return d, nil
+		// Exit the loop when we've seen all pages.
+		if resp.CurrentPage >= resp.TotalPages {
+			break
+		}
+
+		opt.Page = resp.NextPage
 	}
 
+	return d, nil
 }
 
 // SetupClient returns a GitLab client with the specified base URL
