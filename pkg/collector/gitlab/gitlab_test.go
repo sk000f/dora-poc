@@ -15,7 +15,7 @@ import (
 func TestGitLabProjects(t *testing.T) {
 	t.Run("get single Project from GitLab", func(t *testing.T) {
 
-		mux, server, client := setupMockGitLabClient(t)
+		mux, server, client, g := setupMockGitLabClient(t)
 		defer teardown(server)
 
 		mux.HandleFunc("/api/v4/projects", func(w http.ResponseWriter, r *http.Request) {
@@ -35,7 +35,7 @@ func TestGitLabProjects(t *testing.T) {
 				WebURL:            "http://test.com/test/test",
 			}}
 
-		got, err := gitlab.GetProjects(client, getProjectListOptions())
+		got, err := g.GetProjects(client, getProjectListOptions())
 		if err != nil {
 			t.Errorf("Error getting Projects: %v", err)
 		}
@@ -46,7 +46,7 @@ func TestGitLabProjects(t *testing.T) {
 	})
 
 	t.Run("get multiple pages of Projects from GitLab", func(t *testing.T) {
-		mux, server, client := setupMockGitLabClient(t)
+		mux, server, client, g := setupMockGitLabClient(t)
 		defer teardown(server)
 
 		mux.HandleFunc("/api/v4/projects", func(w http.ResponseWriter, r *http.Request) {
@@ -107,7 +107,7 @@ func TestGitLabProjects(t *testing.T) {
 
 		opt := getProjectListOptions()
 
-		got, err := gitlab.GetProjects(client, opt)
+		got, err := g.GetProjects(client, opt)
 		if err != nil {
 			t.Errorf("Error getting Projects: %v", err)
 		}
@@ -119,7 +119,7 @@ func TestGitLabProjects(t *testing.T) {
 
 	t.Run("update projects in repository", func(t *testing.T) {
 
-		mux, server, client := setupMockGitLabClient(t)
+		mux, server, client, g := setupMockGitLabClient(t)
 		defer teardown(server)
 
 		mux.HandleFunc("/api/v4/projects", func(w http.ResponseWriter, r *http.Request) {
@@ -141,7 +141,7 @@ func TestGitLabProjects(t *testing.T) {
 				WebURL:            "http://test.com/test/test",
 			}}
 
-		gitlab.UpdateProjects(client, mockRepository)
+		g.UpdateProjects(client, mockRepository)
 
 		if !reflect.DeepEqual(mockRepository.ProjectData, want) {
 			t.Errorf("got %+v; wanted %+v", mockRepository.ProjectData, want)
@@ -151,7 +151,7 @@ func TestGitLabProjects(t *testing.T) {
 
 func TestGitLabDeployments(t *testing.T) {
 	t.Run("get all deployments from GitLab", func(t *testing.T) {
-		mux, server, client := setupMockGitLabClient(t)
+		mux, server, client, g := setupMockGitLabClient(t)
 		defer teardown(server)
 
 		mux.HandleFunc("/api/v4/projects/1/deployments", func(w http.ResponseWriter, r *http.Request) {
@@ -176,7 +176,7 @@ func TestGitLabDeployments(t *testing.T) {
 			PipelineID:      1,
 		}}
 
-		got, err := gitlab.GetDeployments(1, client, getDeploymentListOptions())
+		got, err := g.GetDeployments(1, client, getDeploymentListOptions())
 		if err != nil {
 			t.Errorf("Error getting Deployments: %v", err)
 		}
@@ -188,7 +188,7 @@ func TestGitLabDeployments(t *testing.T) {
 
 	t.Run("update deployment in repository", func(t *testing.T) {
 
-		mux, server, client := setupMockGitLabClient(t)
+		mux, server, client, g := setupMockGitLabClient(t)
 		defer teardown(server)
 
 		mux.HandleFunc("/api/v4/projects/1/deployments", func(w http.ResponseWriter, r *http.Request) {
@@ -223,7 +223,7 @@ func TestGitLabDeployments(t *testing.T) {
 			PipelineID:      1,
 		}}
 
-		gitlab.UpdateDeployments(p, client, mockRepository)
+		g.UpdateDeployments(p, client, mockRepository)
 
 		if !reflect.DeepEqual(mockRepository.DeploymentData, want) {
 			t.Errorf("got %+v; wanted %+v", mockRepository.DeploymentData, want)
@@ -234,11 +234,11 @@ func TestGitLabDeployments(t *testing.T) {
 func getProjectListOptions() *gl.ListProjectsOptions {
 	return &gl.ListProjectsOptions{
 		ListOptions: gl.ListOptions{Page: 1, PerPage: 1},
-		Archived:    gl.Bool(true),
+		Archived:    gl.Bool(false),
 		OrderBy:     gl.String("id"),
 		Sort:        gl.String("asc"),
 		Search:      gl.String("query"),
-		Simple:      gl.Bool(true),
+		Simple:      gl.Bool(false),
 		Visibility:  gl.Visibility(gl.PublicVisibility),
 	}
 }
@@ -253,19 +253,24 @@ func getDeploymentListOptions() *gl.ListProjectDeploymentsOptions {
 	}
 }
 
-func setupMockGitLabClient(t *testing.T) (*http.ServeMux, *httptest.Server, *gl.Client) {
+func setupMockGitLabClient(t *testing.T) (*http.ServeMux, *httptest.Server, *gl.Client, *gitlab.GitLab) {
 
 	mux := http.NewServeMux()
 
 	server := httptest.NewServer(mux)
 
-	client, err := gitlab.SetupClient("", server.URL)
+	g := &gitlab.GitLab{
+		Token: "",
+		URL:   server.URL,
+	}
+
+	client, err := g.SetupClient(g.Token, g.URL)
 	if err != nil {
 		server.Close()
 		t.Fatalf("Error creating mock GitLab client: %v", err)
 	}
 
-	return mux, server, client
+	return mux, server, client, g
 }
 
 type mockRepo struct {

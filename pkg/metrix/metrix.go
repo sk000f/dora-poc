@@ -1,9 +1,9 @@
 package metrix
 
 import (
-	"fmt"
-	"log"
 	"os"
+
+	"github.com/sk000f/metrix/pkg/collector"
 
 	"github.com/sk000f/metrix/pkg/collector/gitlab"
 )
@@ -13,17 +13,28 @@ func Start() {
 
 	cfg := SetupConfig()
 
-	client, err := gitlab.SetupClient(cfg.GitLabToken, cfg.GitLabURL)
-	if err != nil {
-		log.Fatal(err)
+	gl := &gitlab.GitLab{
+		Token: cfg.GitLabToken,
+		URL:   cfg.GitLabURL,
 	}
 
-	projects, _, err := client.Projects.ListProjects(nil)
-	if err != nil {
-		log.Fatal(err)
-	}
+	r := new(mockRepo)
 
-	fmt.Println(projects)
+	c := collector.NewService(gl, r)
+
+	c.RefreshData()
+
+	// client, err := gitlab.SetupClient(cfg.GitLabToken, cfg.GitLabURL)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	// projects, _, err := client.Projects.ListProjects(nil)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	// fmt.Println(projects)
 }
 
 // SetupConfig configures application based on environment variables
@@ -40,4 +51,19 @@ func SetupConfig() *Config {
 type Config struct {
 	GitLabURL   string
 	GitLabToken string
+}
+
+type mockRepo struct {
+	ProjectData    []*collector.Project
+	DeploymentData []*collector.Deployment
+}
+
+func (m *mockRepo) SaveProjects(p []*collector.Project) {
+	for _, proj := range p {
+		m.ProjectData = append(m.ProjectData, proj)
+	}
+}
+
+func (m *mockRepo) SaveDeployment(d *collector.Deployment) {
+	m.DeploymentData = append(m.DeploymentData, d)
 }
