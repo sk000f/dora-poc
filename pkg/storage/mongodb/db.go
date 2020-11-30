@@ -2,7 +2,6 @@ package mongodb
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"sync"
 
@@ -33,7 +32,7 @@ func (m *DB) SaveProjects(p []*collector.Project) {
 			WebURL:            proj.WebURL,
 		}
 
-		m.InsertProject(mP)
+		m.UpdateProject(mP)
 	}
 }
 
@@ -63,7 +62,8 @@ type Deployment struct {
 	GroupName       string             `json:"group_name"`
 }
 
-func (m *DB) projectExists(p Project) (bool, error) {
+// UpdateProject adds or updates the specified project in the MongoDB database
+func (m *DB) UpdateProject(p Project) {
 
 	c, err := m.GetMongoClient()
 	if err != nil {
@@ -72,69 +72,19 @@ func (m *DB) projectExists(p Project) (bool, error) {
 
 	collection := c.Database("metrix").Collection("projects")
 
-	var eP Project
-	findOpts := options.FindOne()
 	filter := bson.M{"project_id": p.ProjectID}
-	err = collection.FindOne(context.TODO(), filter, findOpts).Decode(&eP)
-
-	if err == mongo.ErrNoDocuments {
-		return false, nil
+	updateOpts := options.Update().SetUpsert(true)
+	update := bson.M{
+		"$set": bson.M{
+			"project_id":          p.ProjectID,
+			"name":                p.Name,
+			"name_with_namespace": p.NameWithNamespace,
+			"web_url":             p.WebURL,
+		},
 	}
-
+	_, err = collection.UpdateOne(context.TODO(), filter, update, updateOpts)
 	if err != nil {
-		return false, err
-	}
-
-	return true, nil
-}
-
-// InsertProject adds the specified project to the MongoDB database
-func (m *DB) InsertProject(p Project) {
-
-	c, err := m.GetMongoClient()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	collection := c.Database("metrix").Collection("projects")
-
-	// find if project exists
-	// exists, err := m.projectExists(p)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	exists := true
-	// if it does then update it
-	if exists {
-
-		filter := bson.M{"project_id": p.ProjectID}
-		updateOpts := options.Update().SetUpsert(true)
-		update := bson.M{
-			"$set": bson.M{
-				"project_id":          p.ProjectID,
-				"name":                p.Name,
-				"name_with_namespace": p.NameWithNamespace,
-				"web_url":             p.WebURL,
-			},
-		}
-		updateResult, err := collection.UpdateOne(context.TODO(), filter, update, updateOpts)
-		if err != nil {
-			log.Fatalf("Error updating Project: %v", err.Error())
-		}
-
-		fmt.Printf("Updated Projects: %v\n", updateResult.MatchedCount)
-
-	} else { // if it doesn't, set object id and insert it
-
-		// p.ID = primitive.NewObjectID()
-
-		// insertResult, err := collection.InsertOne(context.TODO(), p)
-		// if err != nil {
-		// 	log.Fatalf("Error inserting new Project: %v", err.Error())
-		// }
-
-		// fmt.Printf("Created Project: %v\n", insertResult.InsertedID)
+		log.Fatalf("Error updating Project: %v", err.Error())
 	}
 }
 
