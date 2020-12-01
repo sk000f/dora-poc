@@ -13,7 +13,6 @@ func TestMetrix(t *testing.T) {
 	t.Run("configuration values set correctly", func(t *testing.T) {
 
 		os.Setenv("METRIX_ENV", "dev")
-
 		os.Setenv("METRIX_GITLAB_URL", "https://example.com")
 		os.Setenv("METRIX_GITLAB_TOKEN", "1234567890")
 
@@ -24,11 +23,14 @@ func TestMetrix(t *testing.T) {
 			t.Errorf("want %v; got %v", want, got)
 		}
 
+		os.Unsetenv("METRIX_ENV")
 		os.Unsetenv("METRIX_GITLAB_URL")
 		os.Unsetenv("METRIX_GITLAB_TOKEN")
 	})
 
 	t.Run("application starts and executes correctly", func(t *testing.T) {
+
+		os.Setenv("METRIX_ENV", "dev")
 		os.Setenv("METRIX_GITLAB_URL", "https://example.com")
 		os.Setenv("METRIX_GITLAB_TOKEN", "1234567890")
 
@@ -37,6 +39,10 @@ func TestMetrix(t *testing.T) {
 		if err != nil {
 			t.Errorf("Unexpected error thrown: %v", err.Error())
 		}
+
+		os.Unsetenv("METRIX_ENV")
+		os.Unsetenv("METRIX_GITLAB_URL")
+		os.Unsetenv("METRIX_GITLAB_TOKEN")
 	})
 }
 
