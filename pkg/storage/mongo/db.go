@@ -53,7 +53,7 @@ type Project struct {
 
 // Deployment represents metrix view of a deployment object
 type Deployment struct {
-	ID              primitive.ObjectID `jsbn:"_id"`
+	ID              primitive.ObjectID `bson:"_id"`
 	DeploymentID    int                `bson:"deployment_id"`
 	Status          string             `bson:"status"`
 	EnvironmentName string             `bson:"envrionment_name"`
