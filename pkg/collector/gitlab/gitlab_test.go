@@ -155,19 +155,28 @@ func TestGitLabDeployments(t *testing.T) {
 		defer teardown(server)
 
 		mux.HandleFunc("/api/v4/projects/1/deployments", func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprint(w, `[{
+			fmt.Fprint(w, `[
+			{
 				"id": 1, 
 				"environment": {
 					"name": "production"
-					}, 
-					"deployable": {
-						"status": "success", 
-						"pipeline": {
-							"id": 1
-						}
+				}, 
+				"deployable": {
+					"status": "success", 
+					"pipeline": {
+						"id": 1
 					}
-				}]`)
+				}
+			}
+			]`)
 		})
+
+		p := &collector.Project{
+			ID:                1,
+			Name:              "test",
+			NameWithNamespace: "test/test",
+			WebURL:            "http://test.com/test/test",
+		}
 
 		want := []*collector.Deployment{{
 			ID:              1,
@@ -176,7 +185,7 @@ func TestGitLabDeployments(t *testing.T) {
 			PipelineID:      1,
 		}}
 
-		got, err := g.GetDeployments(1, client, getDeploymentListOptions())
+		got, err := g.GetDeployments(p, client, getDeploymentListOptions())
 		if err != nil {
 			t.Errorf("Error getting Deployments: %v", err)
 		}
@@ -232,6 +241,13 @@ func TestGitLabDeployments(t *testing.T) {
 			}
 		})
 
+		p := &collector.Project{
+			ID:                1,
+			Name:              "test",
+			NameWithNamespace: "test/test",
+			WebURL:            "http://test.com/test/test",
+		}
+
 		want := []*collector.Deployment{
 			{
 				ID:              1,
@@ -249,7 +265,159 @@ func TestGitLabDeployments(t *testing.T) {
 
 		opt := getDeploymentListOptions()
 
-		got, err := g.GetDeployments(1, client, opt)
+		got, err := g.GetDeployments(p, client, opt)
+		if err != nil {
+			t.Errorf("Error getting Deployments: %v", err)
+		}
+
+		if !reflect.DeepEqual(got, want) {
+			t.Errorf("got %+v; wanted %+v", got, want)
+		}
+	})
+
+	t.Run("filter out non production deployments from GitLab", func(t *testing.T) {
+		mux, server, client, g := setupMockGitLabClient(t)
+		defer teardown(server)
+
+		mux.HandleFunc("/api/v4/projects/1/deployments", func(w http.ResponseWriter, r *http.Request) {
+			fmt.Fprint(w, `[
+				{
+					"id": 1, 
+					"environment": {
+						"name": "production"
+					}, 
+					"deployable": {
+						"status": "success", 
+						"pipeline": {
+							"id": 1
+						}
+					}
+				},
+				{
+					"id": 2, 
+					"environment": {
+						"name": "staging"
+					}, 
+					"deployable": {
+						"status": "success", 
+						"pipeline": {
+							"id": 2
+						}
+					}
+				},
+				{
+					"id": 3, 
+					"environment": {
+						"name": "production"
+					}, 
+					"deployable": {
+						"status": "success", 
+						"pipeline": {
+							"id": 3
+						}
+					}
+				}
+				]`)
+		})
+
+		p := &collector.Project{
+			ID:                1,
+			Name:              "test",
+			NameWithNamespace: "test/test",
+			WebURL:            "http://test.com/test/test",
+		}
+
+		want := []*collector.Deployment{
+			{
+				ID:              1,
+				Status:          "success",
+				EnvironmentName: "production",
+				PipelineID:      1,
+			},
+			{
+				ID:              3,
+				Status:          "success",
+				EnvironmentName: "production",
+				PipelineID:      3,
+			}}
+
+		got, err := g.GetDeployments(p, client, getDeploymentListOptions())
+		if err != nil {
+			t.Errorf("Error getting Deployments: %v", err)
+		}
+
+		if !reflect.DeepEqual(got, want) {
+			t.Errorf("got %+v; wanted %+v", got, want)
+		}
+	})
+
+	t.Run("filter out deployments not successful or failed from GitLab", func(t *testing.T) {
+		mux, server, client, g := setupMockGitLabClient(t)
+		defer teardown(server)
+
+		mux.HandleFunc("/api/v4/projects/1/deployments", func(w http.ResponseWriter, r *http.Request) {
+			fmt.Fprint(w, `[
+				{
+					"id": 1, 
+					"environment": {
+						"name": "production"
+					}, 
+					"deployable": {
+						"status": "success", 
+						"pipeline": {
+							"id": 1
+						}
+					}
+				},
+				{
+					"id": 2, 
+					"environment": {
+						"name": "production"
+					}, 
+					"deployable": {
+						"status": "pending", 
+						"pipeline": {
+							"id": 2
+						}
+					}
+				},
+				{
+					"id": 3, 
+					"environment": {
+						"name": "production"
+					}, 
+					"deployable": {
+						"status": "failed", 
+						"pipeline": {
+							"id": 3
+						}
+					}
+				}
+				]`)
+		})
+
+		p := &collector.Project{
+			ID:                1,
+			Name:              "test",
+			NameWithNamespace: "test/test",
+			WebURL:            "http://test.com/test/test",
+		}
+
+		want := []*collector.Deployment{
+			{
+				ID:              1,
+				Status:          "success",
+				EnvironmentName: "production",
+				PipelineID:      1,
+			},
+			{
+				ID:              3,
+				Status:          "failed",
+				EnvironmentName: "production",
+				PipelineID:      3,
+			}}
+
+		got, err := g.GetDeployments(p, client, getDeploymentListOptions())
 		if err != nil {
 			t.Errorf("Error getting Deployments: %v", err)
 		}

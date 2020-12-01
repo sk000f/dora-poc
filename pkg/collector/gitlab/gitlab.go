@@ -49,7 +49,7 @@ func (g *GitLab) UpdateDeployments(p []*collector.Project, c *gl.Client, r colle
 
 	// get and update deployments for projects
 	for _, proj := range p {
-		d, _ := g.GetDeployments(proj.ID, c, getDeploymentListOptions())
+		d, _ := g.GetDeployments(proj, c, getDeploymentListOptions())
 		for _, dep := range d {
 			r.SaveDeployment(dep)
 		}
@@ -91,13 +91,13 @@ func (g *GitLab) GetProjects(client *gl.Client, opt *gl.ListProjectsOptions) ([]
 }
 
 // GetDeployments lists all Deployments for the specified Project
-func (g *GitLab) GetDeployments(pid int, client *gl.Client, opt *gl.ListProjectDeploymentsOptions) ([]*collector.Deployment, error) {
+func (g *GitLab) GetDeployments(p *collector.Project, client *gl.Client, opt *gl.ListProjectDeploymentsOptions) ([]*collector.Deployment, error) {
 
 	d := []*collector.Deployment{}
 
 	for {
 
-		deployments, resp, err := client.Deployments.ListProjectDeployments(pid, opt)
+		deployments, resp, err := client.Deployments.ListProjectDeployments(p.ID, opt)
 		if err != nil {
 			fmt.Printf("Error: %v", err.Error())
 			return nil, err
@@ -105,12 +105,18 @@ func (g *GitLab) GetDeployments(pid int, client *gl.Client, opt *gl.ListProjectD
 
 		// iterate over deployments and convert to metrix representation
 		for _, dep := range deployments {
-			d = append(d, &collector.Deployment{
-				ID:              dep.ID,
-				Status:          dep.Deployable.Status,
-				EnvironmentName: dep.Environment.Name,
-				PipelineID:      dep.Deployable.Pipeline.ID,
-			})
+
+			if dep.Environment.Name == "production" &&
+				(dep.Deployable.Status == "success" || dep.Deployable.Status == "failed") {
+
+				d = append(d, &collector.Deployment{
+					ID:              dep.ID,
+					Status:          dep.Deployable.Status,
+					EnvironmentName: dep.Environment.Name,
+					PipelineID:      dep.Deployable.Pipeline.ID,
+				})
+			}
+
 		}
 
 		// Exit the loop when we've seen all pages.
