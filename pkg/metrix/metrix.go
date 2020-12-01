@@ -9,7 +9,7 @@ import (
 
 	"github.com/sk000f/metrix/pkg/collector"
 	"github.com/sk000f/metrix/pkg/collector/gitlab"
-	"github.com/sk000f/metrix/pkg/storage/mongodb"
+	"github.com/sk000f/metrix/pkg/storage/mongo"
 )
 
 // Start initialises and configures the application
@@ -22,7 +22,7 @@ func Start() error {
 		URL:   cfg.GitLabURL,
 	}
 
-	r := new(mongodb.DB)
+	r := new(mongo.DB)
 	r.ConnStr = cfg.DBConnString
 
 	c := collector.NewService(gl, r)
