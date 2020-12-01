@@ -11,6 +11,9 @@ import (
 
 func TestMetrix(t *testing.T) {
 	t.Run("configuration values set correctly", func(t *testing.T) {
+
+		os.Setenv("METRIX_ENV", "dev")
+
 		os.Setenv("METRIX_GITLAB_URL", "https://example.com")
 		os.Setenv("METRIX_GITLAB_TOKEN", "1234567890")
 

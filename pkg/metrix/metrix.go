@@ -41,9 +41,11 @@ func SetupConfig() *Config {
 
 	cfg := new(Config)
 
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal(err)
+	if os.Getenv("METRIX_ENV") != "dev" {
+		err := godotenv.Load()
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	cfg.GitLabURL = os.Getenv("METRIX_GITLAB_URL")
