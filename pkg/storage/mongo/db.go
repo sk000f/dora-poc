@@ -53,13 +53,13 @@ type Project struct {
 
 // Deployment represents metrix view of a deployment object
 type Deployment struct {
-	ID              primitive.ObjectID `json:"_id"`
-	DeploymentID    int                `json:"deployment_id"`
-	Status          string             `json:"status"`
-	EnvironmentName string             `json:"envrionment_name"`
-	PipelineID      int                `json:"pipeline_id"`
-	ProjectName     string             `json:"project_name"`
-	GroupName       string             `json:"group_name"`
+	ID              primitive.ObjectID `jsbn:"_id"`
+	DeploymentID    int                `bson:"deployment_id"`
+	Status          string             `bson:"status"`
+	EnvironmentName string             `bson:"envrionment_name"`
+	PipelineID      int                `bson:"pipeline_id"`
+	ProjectName     string             `bson:"project_name"`
+	GroupName       string             `bson:"group_name"`
 }
 
 // UpdateProject adds or updates the specified project in the MongoDB database
