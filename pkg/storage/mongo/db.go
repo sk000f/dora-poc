@@ -38,7 +38,13 @@ func (m *DB) SaveProjects(p []*collector.Project) {
 
 // SaveDeployment saves a Deployment into the MongoDB database
 func (m *DB) SaveDeployment(d *collector.Deployment) {
-	//m.DeploymentData = append(m.DeploymentData, d)
+	mD := Deployment{
+		DeploymentID:    d.ID,
+		Status:          d.Status,
+		EnvironmentName: d.EnvironmentName,
+		PipelineID:      d.PipelineID,
+	}
+	m.UpdateDeployment(mD)
 }
 
 // Project represents metrix view of a project object
@@ -74,6 +80,7 @@ func (m *DB) UpdateProject(p Project) {
 
 	filter := bson.M{"project_id": p.ProjectID}
 	updateOpts := options.Update().SetUpsert(true)
+
 	update := bson.M{
 		"$set": bson.M{
 			"project_id":          p.ProjectID,
@@ -85,6 +92,35 @@ func (m *DB) UpdateProject(p Project) {
 	_, err = collection.UpdateOne(context.TODO(), filter, update, updateOpts)
 	if err != nil {
 		log.Fatalf("Error updating Project: %v", err.Error())
+	}
+}
+
+// UpdateDeployment adds or updates the specified deployment in the MongoDB database
+func (m *DB) UpdateDeployment(d Deployment) {
+
+	c, err := m.GetMongoClient()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	collection := c.Database("metrix").Collection("deployments")
+
+	filter := bson.M{"deployment_id": d.DeploymentID}
+	updateOpts := options.Update().SetUpsert(true)
+
+	update := bson.M{
+		"$set": bson.M{
+			"deployment_id":    d.DeploymentID,
+			"status":           d.Status,
+			"environment_name": d.EnvironmentName,
+			"pipeline_id":      d.PipelineID,
+			"project_name":     d.ProjectName,
+			"group_name":       d.GroupName,
+		},
+	}
+	_, err = collection.UpdateOne(context.TODO(), filter, update, updateOpts)
+	if err != nil {
+		log.Fatalf("Error updating Deployment: %v", err.Error())
 	}
 }
 
