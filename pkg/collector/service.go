@@ -30,10 +30,12 @@ type Project struct {
 
 // Deployment represents metrix view of a GitLab deployment object
 type Deployment struct {
-	ID              int
-	Status          string
-	EnvironmentName string
-	PipelineID      int
+	ID               int
+	Status           string
+	EnvironmentName  string
+	ProjectName      string
+	ProjectNamespace string
+	PipelineID       int
 }
 
 // NewService creates a collector with required dependencies

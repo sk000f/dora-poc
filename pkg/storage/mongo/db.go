@@ -40,10 +40,12 @@ func (m *DB) SaveProjects(p []*collector.Project) {
 // SaveDeployment saves a Deployment into the MongoDB database
 func (m *DB) SaveDeployment(d *collector.Deployment) {
 	mD := Deployment{
-		DeploymentID:    d.ID,
-		Status:          d.Status,
-		EnvironmentName: d.EnvironmentName,
-		PipelineID:      d.PipelineID,
+		DeploymentID:     d.ID,
+		Status:           d.Status,
+		EnvironmentName:  d.EnvironmentName,
+		ProjectName:      d.ProjectName,
+		ProjectNamespace: d.ProjectNamespace,
+		PipelineID:       d.PipelineID,
 	}
 	m.UpdateDeployment(mD)
 }
@@ -61,13 +63,13 @@ type Project struct {
 
 // Deployment represents metrix view of a deployment object
 type Deployment struct {
-	ID              primitive.ObjectID `bson:"_id"`
-	DeploymentID    int                `bson:"deployment_id"`
-	Status          string             `bson:"status"`
-	EnvironmentName string             `bson:"envrionment_name"`
-	PipelineID      int                `bson:"pipeline_id"`
-	ProjectName     string             `bson:"project_name"`
-	GroupName       string             `bson:"group_name"`
+	ID               primitive.ObjectID `bson:"_id"`
+	DeploymentID     int                `bson:"deployment_id"`
+	Status           string             `bson:"status"`
+	EnvironmentName  string             `bson:"envrionment_name"`
+	ProjectName      string             `bson:"project_name"`
+	ProjectNamespace string             `bson:"project_namespace"`
+	PipelineID       int                `bson:"pipeline_id"`
 }
 
 // UpdateProject adds or updates the specified project in the MongoDB database
@@ -113,12 +115,12 @@ func (m *DB) UpdateDeployment(d Deployment) {
 
 	update := bson.M{
 		"$set": bson.M{
-			"deployment_id":    d.DeploymentID,
-			"status":           d.Status,
-			"environment_name": d.EnvironmentName,
-			"pipeline_id":      d.PipelineID,
-			"project_name":     d.ProjectName,
-			"group_name":       d.GroupName,
+			"deployment_id":     d.DeploymentID,
+			"status":            d.Status,
+			"environment_name":  d.EnvironmentName,
+			"project_name":      d.ProjectName,
+			"project_namespace": d.ProjectNamespace,
+			"pipeline_id":       d.PipelineID,
 		},
 	}
 	_, err = collection.UpdateOne(context.TODO(), filter, update, updateOpts)

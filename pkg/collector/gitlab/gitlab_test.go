@@ -201,10 +201,12 @@ func TestGitLabDeployments(t *testing.T) {
 		}
 
 		want := []*collector.Deployment{{
-			ID:              1,
-			Status:          "success",
-			EnvironmentName: "production",
-			PipelineID:      1,
+			ID:               1,
+			Status:           "success",
+			EnvironmentName:  "production",
+			ProjectName:      "test",
+			ProjectNamespace: "test/test",
+			PipelineID:       1,
 		}}
 
 		got, err := g.GetDeployments(p, client, getDeploymentListOptions())
@@ -273,16 +275,20 @@ func TestGitLabDeployments(t *testing.T) {
 
 		want := []*collector.Deployment{
 			{
-				ID:              1,
-				Status:          "success",
-				EnvironmentName: "production",
-				PipelineID:      1,
+				ID:               1,
+				Status:           "success",
+				EnvironmentName:  "production",
+				ProjectName:      "test",
+				ProjectNamespace: "test/test",
+				PipelineID:       1,
 			},
 			{
-				ID:              2,
-				Status:          "success",
-				EnvironmentName: "production",
-				PipelineID:      2,
+				ID:               2,
+				Status:           "success",
+				EnvironmentName:  "production",
+				ProjectName:      "test",
+				ProjectNamespace: "test/test",
+				PipelineID:       2,
 			},
 		}
 
@@ -353,16 +359,20 @@ func TestGitLabDeployments(t *testing.T) {
 
 		want := []*collector.Deployment{
 			{
-				ID:              1,
-				Status:          "success",
-				EnvironmentName: "production",
-				PipelineID:      1,
+				ID:               1,
+				Status:           "success",
+				EnvironmentName:  "production",
+				ProjectName:      "test",
+				ProjectNamespace: "test/test",
+				PipelineID:       1,
 			},
 			{
-				ID:              3,
-				Status:          "success",
-				EnvironmentName: "production",
-				PipelineID:      3,
+				ID:               3,
+				Status:           "success",
+				EnvironmentName:  "production",
+				ProjectName:      "test",
+				ProjectNamespace: "test/test",
+				PipelineID:       3,
 			}}
 
 		got, err := g.GetDeployments(p, client, getDeploymentListOptions())
@@ -430,16 +440,20 @@ func TestGitLabDeployments(t *testing.T) {
 
 		want := []*collector.Deployment{
 			{
-				ID:              1,
-				Status:          "success",
-				EnvironmentName: "production",
-				PipelineID:      1,
+				ID:               1,
+				Status:           "success",
+				EnvironmentName:  "production",
+				ProjectName:      "test",
+				ProjectNamespace: "test/test",
+				PipelineID:       1,
 			},
 			{
-				ID:              3,
-				Status:          "failed",
-				EnvironmentName: "production",
-				PipelineID:      3,
+				ID:               3,
+				Status:           "failed",
+				EnvironmentName:  "production",
+				ProjectName:      "test",
+				ProjectNamespace: "test/test",
+				PipelineID:       3,
 			}}
 
 		got, err := g.GetDeployments(p, client, getDeploymentListOptions())
@@ -484,10 +498,12 @@ func TestGitLabDeployments(t *testing.T) {
 			}}
 
 		want := []*collector.Deployment{{
-			ID:              1,
-			Status:          "success",
-			EnvironmentName: "production",
-			PipelineID:      1,
+			ID:               1,
+			Status:           "success",
+			EnvironmentName:  "production",
+			ProjectName:      "test",
+			ProjectNamespace: "test/test",
+			PipelineID:       1,
 		}}
 
 		g.UpdateDeployments(p, client, mockRepository)
