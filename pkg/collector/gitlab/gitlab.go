@@ -107,11 +107,11 @@ func (g *GitLab) GetDeployments(p *collector.Project, client *gl.Client, opt *gl
 		for _, dep := range deployments {
 
 			if dep.Environment.Name == "production" &&
-				(dep.Deployable.Status == "success" || dep.Deployable.Status == "failed") {
+				(dep.Status == "success" || dep.Status == "failed") {
 
 				d = append(d, &collector.Deployment{
 					ID:              dep.ID,
-					Status:          dep.Deployable.Status,
+					Status:          dep.Status,
 					EnvironmentName: dep.Environment.Name,
 					PipelineID:      dep.Deployable.Pipeline.ID,
 				})
@@ -152,6 +152,5 @@ func getDeploymentListOptions() *gl.ListProjectDeploymentsOptions {
 	return &gl.ListProjectDeploymentsOptions{
 		ListOptions: gl.ListOptions{Page: 1, PerPage: 20},
 		Environment: gl.String("production"),
-		Status:      gl.String("success"),
 	}
 }

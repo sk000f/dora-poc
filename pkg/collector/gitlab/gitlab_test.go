@@ -158,11 +158,11 @@ func TestGitLabDeployments(t *testing.T) {
 			fmt.Fprint(w, `[
 			{
 				"id": 1, 
+				"status": "success",
 				"environment": {
 					"name": "production"
 				}, 
-				"deployable": {
-					"status": "success", 
+				"deployable": { 
 					"pipeline": {
 						"id": 1
 					}
@@ -207,18 +207,18 @@ func TestGitLabDeployments(t *testing.T) {
 				w.Header().Set("X-Total-Pages", "2")
 				w.Header().Set("X-Next-Page", "2")
 				fmt.Fprint(w, `[{
-					"id": 1, 
-					"environment": {
-						"name": "production"
-						}, 
-						"deployable": {
-							"status": "success", 
-							"pipeline": {
-								"id": 1
+						"id": 1,
+						"status": "success",
+						"environment": {
+							"name": "production"
+							},
+							"deployable": {
+								"pipeline": {
+									"id": 1
+								}
 							}
 						}
-					}
-					]`)
+						]`)
 			}
 
 			if r.URL.Query()["page"][0] == "2" {
@@ -226,18 +226,18 @@ func TestGitLabDeployments(t *testing.T) {
 				w.Header().Set("X-Total-Pages", "2")
 				w.Header().Set("X-Next-Page", "2")
 				fmt.Fprint(w, `[{
-					"id": 2, 
-					"environment": {
-						"name": "production"
-						}, 
-						"deployable": {
-							"status": "success", 
-							"pipeline": {
-								"id": 2
+						"id": 2,
+						"status": "success",
+						"environment": {
+							"name": "production"
+							},
+							"deployable": {
+								"pipeline": {
+									"id": 2
+								}
 							}
 						}
-					}
-					]`)
+						]`)
 			}
 		})
 
@@ -281,43 +281,43 @@ func TestGitLabDeployments(t *testing.T) {
 
 		mux.HandleFunc("/api/v4/projects/1/deployments", func(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprint(w, `[
-				{
-					"id": 1, 
-					"environment": {
-						"name": "production"
-					}, 
-					"deployable": {
-						"status": "success", 
-						"pipeline": {
-							"id": 1
+					{
+						"id": 1,
+						"status": "success",
+						"environment": {
+							"name": "production"
+						},
+						"deployable": {
+							"pipeline": {
+								"id": 1
+							}
+						}
+					},
+					{
+						"id": 2,
+						"status": "success",
+						"environment": {
+							"name": "staging"
+						},
+						"deployable": {
+							"pipeline": {
+								"id": 2
+							}
+						}
+					},
+					{
+						"id": 3,
+						"status": "success",
+						"environment": {
+							"name": "production"
+						},
+						"deployable": {
+							"pipeline": {
+								"id": 3
+							}
 						}
 					}
-				},
-				{
-					"id": 2, 
-					"environment": {
-						"name": "staging"
-					}, 
-					"deployable": {
-						"status": "success", 
-						"pipeline": {
-							"id": 2
-						}
-					}
-				},
-				{
-					"id": 3, 
-					"environment": {
-						"name": "production"
-					}, 
-					"deployable": {
-						"status": "success", 
-						"pipeline": {
-							"id": 3
-						}
-					}
-				}
-				]`)
+					]`)
 		})
 
 		p := &collector.Project{
@@ -357,43 +357,43 @@ func TestGitLabDeployments(t *testing.T) {
 
 		mux.HandleFunc("/api/v4/projects/1/deployments", func(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprint(w, `[
-				{
-					"id": 1, 
-					"environment": {
-						"name": "production"
-					}, 
-					"deployable": {
-						"status": "success", 
-						"pipeline": {
-							"id": 1
+					{
+						"id": 1,
+						"status": "success",
+						"environment": {
+							"name": "production"
+						},
+						"deployable": {
+							"pipeline": {
+								"id": 1
+							}
+						}
+					},
+					{
+						"id": 2,
+						"status": "pending",
+						"environment": {
+							"name": "production"
+						},
+						"deployable": {
+							"pipeline": {
+								"id": 2
+							}
+						}
+					},
+					{
+						"id": 3,
+						"status": "failed",
+						"environment": {
+							"name": "production"
+						},
+						"deployable": {
+							"pipeline": {
+								"id": 3
+							}
 						}
 					}
-				},
-				{
-					"id": 2, 
-					"environment": {
-						"name": "production"
-					}, 
-					"deployable": {
-						"status": "pending", 
-						"pipeline": {
-							"id": 2
-						}
-					}
-				},
-				{
-					"id": 3, 
-					"environment": {
-						"name": "production"
-					}, 
-					"deployable": {
-						"status": "failed", 
-						"pipeline": {
-							"id": 3
-						}
-					}
-				}
-				]`)
+					]`)
 		})
 
 		p := &collector.Project{
@@ -434,17 +434,17 @@ func TestGitLabDeployments(t *testing.T) {
 
 		mux.HandleFunc("/api/v4/projects/1/deployments", func(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprint(w, `[{
-				"id": 1, 
-				"environment": {
-					"name": "production"
-					}, 
-					"deployable": {
-						"status": "success", 
-						"pipeline": {
-							"id": 1
+					"id": 1,
+					"status": "success",
+					"environment": {
+						"name": "production"
+						},
+						"deployable": {
+							"pipeline": {
+								"id": 1
+							}
 						}
-					}
-				}]`)
+					}]`)
 		})
 
 		mockRepository := new(mockRepo)

@@ -3,15 +3,16 @@ module github.com/sk000f/metrix
 go 1.13
 
 require (
-	github.com/aws/aws-sdk-go v1.35.36 // indirect
+	github.com/aws/aws-sdk-go v1.36.0 // indirect
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/golang/snappy v0.0.2 // indirect
 	github.com/hashicorp/go-retryablehttp v0.6.8 // indirect
 	github.com/joho/godotenv v1.3.0
 	github.com/klauspost/compress v1.11.3 // indirect
-	github.com/xanzy/go-gitlab v0.39.0
-	go.mongodb.org/mongo-driver v1.4.3
+	github.com/xanzy/go-gitlab v0.40.1
+	go.mongodb.org/mongo-driver v1.4.4
 	golang.org/x/crypto v0.0.0-20201124201722-c8d3bf9c5392 // indirect
+	golang.org/x/net v0.0.0-20201202161906-c7110b5ffcbb // indirect
 	golang.org/x/oauth2 v0.0.0-20201109201403-9fd604954f58 // indirect
 	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9 // indirect
 	golang.org/x/text v0.3.4 // indirect
