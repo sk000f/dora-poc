@@ -21,7 +21,8 @@ func TestGitLabProjects(t *testing.T) {
 		mux.HandleFunc("/api/v4/projects", func(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprint(w, `[{
 					"id": 1, 
-					"name": "test", 
+					"name": "test",
+					"path": "test",
 					"path_with_namespace": "test/test", 
 					"web_url": "http://test.com/test/test",
 					"namespace" :{
@@ -34,6 +35,7 @@ func TestGitLabProjects(t *testing.T) {
 			{
 				ID:                1,
 				Name:              "test",
+				Path:              "test",
 				PathWithNamespace: "test/test",
 				Namespace:         "test/test",
 				WebURL:            "http://test.com/test/test",
@@ -62,6 +64,7 @@ func TestGitLabProjects(t *testing.T) {
 				fmt.Fprint(w, `[{
 					"id": 1, 
 					"name": "test", 
+					"path": "test",
 					"path_with_namespace": "test/test", 
 					"web_url": "http://test.com/test/test",
 					"namespace" :{
@@ -79,6 +82,7 @@ func TestGitLabProjects(t *testing.T) {
 				{
 					"id": 2, 
 					"name": "test", 
+					"path": "test",
 					"path_with_namespace": "test/test", 
 					"web_url": "http://test.com/test/test",
 					"namespace" :{
@@ -88,6 +92,7 @@ func TestGitLabProjects(t *testing.T) {
 				{
 					"id": 3, 
 					"name": "test", 
+					"path": "test",
 					"path_with_namespace": "test/test", 
 					"web_url": "http://test.com/test/test",
 					"namespace" :{
@@ -102,6 +107,7 @@ func TestGitLabProjects(t *testing.T) {
 			{
 				ID:                1,
 				Name:              "test",
+				Path:              "test",
 				PathWithNamespace: "test/test",
 				Namespace:         "test/test",
 				WebURL:            "http://test.com/test/test",
@@ -109,6 +115,7 @@ func TestGitLabProjects(t *testing.T) {
 			{
 				ID:                2,
 				Name:              "test",
+				Path:              "test",
 				PathWithNamespace: "test/test",
 				Namespace:         "test/test",
 				WebURL:            "http://test.com/test/test",
@@ -116,6 +123,7 @@ func TestGitLabProjects(t *testing.T) {
 			{
 				ID:                3,
 				Name:              "test",
+				Path:              "test",
 				PathWithNamespace: "test/test",
 				Namespace:         "test/test",
 				WebURL:            "http://test.com/test/test",
@@ -143,6 +151,7 @@ func TestGitLabProjects(t *testing.T) {
 			fmt.Fprint(w, `[{
 					"id": 1, 
 					"name": "test", 
+					"path": "test",
 					"path_with_namespace": "test/test", 
 					"web_url": "http://test.com/test/test",
 					"namespace" :{
@@ -157,6 +166,7 @@ func TestGitLabProjects(t *testing.T) {
 			{
 				ID:                1,
 				Name:              "test",
+				Path:              "test",
 				PathWithNamespace: "test/test",
 				Namespace:         "test/test",
 				WebURL:            "http://test.com/test/test",
@@ -195,6 +205,7 @@ func TestGitLabDeployments(t *testing.T) {
 		p := &collector.Project{
 			ID:                1,
 			Name:              "test",
+			Path:              "test",
 			PathWithNamespace: "test/test",
 			Namespace:         "test/test",
 			WebURL:            "http://test.com/test/test",
@@ -206,6 +217,7 @@ func TestGitLabDeployments(t *testing.T) {
 			EnvironmentName:  "production",
 			ProjectID:        1,
 			ProjectName:      "test",
+			ProjectPath:      "test",
 			ProjectNamespace: "test/test",
 			PipelineID:       1,
 		}}
@@ -269,6 +281,7 @@ func TestGitLabDeployments(t *testing.T) {
 		p := &collector.Project{
 			ID:                1,
 			Name:              "test",
+			Path:              "test",
 			PathWithNamespace: "test/test",
 			Namespace:         "test/test",
 			WebURL:            "http://test.com/test/test",
@@ -281,6 +294,7 @@ func TestGitLabDeployments(t *testing.T) {
 				EnvironmentName:  "production",
 				ProjectID:        1,
 				ProjectName:      "test",
+				ProjectPath:      "test",
 				ProjectNamespace: "test/test",
 				PipelineID:       1,
 			},
@@ -290,6 +304,7 @@ func TestGitLabDeployments(t *testing.T) {
 				EnvironmentName:  "production",
 				ProjectID:        1,
 				ProjectName:      "test",
+				ProjectPath:      "test",
 				ProjectNamespace: "test/test",
 				PipelineID:       2,
 			},
@@ -355,6 +370,7 @@ func TestGitLabDeployments(t *testing.T) {
 		p := &collector.Project{
 			ID:                1,
 			Name:              "test",
+			Path:              "test",
 			PathWithNamespace: "test/test",
 			Namespace:         "test/test",
 			WebURL:            "http://test.com/test/test",
@@ -367,6 +383,7 @@ func TestGitLabDeployments(t *testing.T) {
 				EnvironmentName:  "production",
 				ProjectID:        1,
 				ProjectName:      "test",
+				ProjectPath:      "test",
 				ProjectNamespace: "test/test",
 				PipelineID:       1,
 			},
@@ -376,6 +393,7 @@ func TestGitLabDeployments(t *testing.T) {
 				EnvironmentName:  "production",
 				ProjectID:        1,
 				ProjectName:      "test",
+				ProjectPath:      "test",
 				ProjectNamespace: "test/test",
 				PipelineID:       3,
 			}}
@@ -438,6 +456,7 @@ func TestGitLabDeployments(t *testing.T) {
 		p := &collector.Project{
 			ID:                1,
 			Name:              "test",
+			Path:              "test",
 			PathWithNamespace: "test/test",
 			Namespace:         "test/test",
 			WebURL:            "http://test.com/test/test",
@@ -450,6 +469,7 @@ func TestGitLabDeployments(t *testing.T) {
 				EnvironmentName:  "production",
 				ProjectID:        1,
 				ProjectName:      "test",
+				ProjectPath:      "test",
 				ProjectNamespace: "test/test",
 				PipelineID:       1,
 			},
@@ -459,6 +479,7 @@ func TestGitLabDeployments(t *testing.T) {
 				EnvironmentName:  "production",
 				ProjectID:        1,
 				ProjectName:      "test",
+				ProjectPath:      "test",
 				ProjectNamespace: "test/test",
 				PipelineID:       3,
 			}}
@@ -499,6 +520,7 @@ func TestGitLabDeployments(t *testing.T) {
 			{
 				ID:                1,
 				Name:              "test",
+				Path:              "test",
 				PathWithNamespace: "test/test",
 				Namespace:         "test/test",
 				WebURL:            "http://test.com/test/test",
@@ -510,6 +532,7 @@ func TestGitLabDeployments(t *testing.T) {
 			EnvironmentName:  "production",
 			ProjectID:        1,
 			ProjectName:      "test",
+			ProjectPath:      "test",
 			ProjectNamespace: "test/test",
 			PipelineID:       1,
 		}}

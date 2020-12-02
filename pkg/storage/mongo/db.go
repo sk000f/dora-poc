@@ -28,6 +28,7 @@ func (m *DB) SaveProjects(p []*collector.Project) {
 		mP := Project{
 			ProjectID:         proj.ID,
 			Name:              proj.Name,
+			Path:              proj.Path,
 			PathWithNamespace: proj.PathWithNamespace,
 			Namespace:         proj.Namespace,
 			WebURL:            proj.WebURL,
@@ -45,6 +46,7 @@ func (m *DB) SaveDeployment(d *collector.Deployment) {
 		EnvironmentName:  d.EnvironmentName,
 		ProjectID:        d.ProjectID,
 		ProjectName:      d.ProjectName,
+		ProjectPath:      d.ProjectPath,
 		ProjectNamespace: d.ProjectNamespace,
 		PipelineID:       d.PipelineID,
 	}
@@ -56,6 +58,7 @@ type Project struct {
 	ID                primitive.ObjectID `bson:"_id"`
 	ProjectID         int                `bson:"project_id"`
 	Name              string             `bson:"name"`
+	Path              string             `bson:"path"`
 	PathWithNamespace string             `bson:"path_with_namespace"`
 	Namespace         string             `bson:"namespace"`
 	WebURL            string             `bson:"web_url"`
@@ -70,6 +73,7 @@ type Deployment struct {
 	EnvironmentName  string             `bson:"envrionment_name"`
 	ProjectID        int                `bson:"project_id"`
 	ProjectName      string             `bson:"project_name"`
+	ProjectPath      string             `bson:"project_path"`
 	ProjectNamespace string             `bson:"project_namespace"`
 	PipelineID       int                `bson:"pipeline_id"`
 }
@@ -91,6 +95,7 @@ func (m *DB) UpdateProject(p Project) {
 		"$set": bson.M{
 			"project_id":          p.ProjectID,
 			"name":                p.Name,
+			"path":                p.Path,
 			"path_with_namespace": p.PathWithNamespace,
 			"namespace":           p.Namespace,
 			"web_url":             p.WebURL,
@@ -122,6 +127,7 @@ func (m *DB) UpdateDeployment(d Deployment) {
 			"environment_name":  d.EnvironmentName,
 			"project_id":        d.ProjectID,
 			"project_name":      d.ProjectName,
+			"project_path":      d.ProjectPath,
 			"project_namespace": d.ProjectNamespace,
 			"pipeline_id":       d.PipelineID,
 		},

@@ -74,6 +74,7 @@ func (g *GitLab) GetProjects(client *gl.Client, opt *gl.ListProjectsOptions) ([]
 			p = append(p, &collector.Project{
 				ID:                pr.ID,
 				Name:              pr.Name,
+				Path:              pr.Path,
 				PathWithNamespace: pr.PathWithNamespace,
 				Namespace:         pr.Namespace.FullPath,
 				WebURL:            pr.WebURL,
@@ -116,6 +117,7 @@ func (g *GitLab) GetDeployments(p *collector.Project, client *gl.Client, opt *gl
 					EnvironmentName:  dep.Environment.Name,
 					ProjectID:        p.ID,
 					ProjectName:      p.Name,
+					ProjectPath:      p.Path,
 					ProjectNamespace: p.Namespace,
 					PipelineID:       dep.Deployable.Pipeline.ID,
 				})

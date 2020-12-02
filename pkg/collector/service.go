@@ -23,6 +23,7 @@ type Repository interface {
 type Project struct {
 	ID                int
 	Name              string
+	Path              string
 	PathWithNamespace string
 	Namespace         string
 	WebURL            string
@@ -35,6 +36,7 @@ type Deployment struct {
 	EnvironmentName  string
 	ProjectID        int
 	ProjectName      string
+	ProjectPath      string
 	ProjectNamespace string
 	PipelineID       int
 }
