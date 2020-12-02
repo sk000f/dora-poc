@@ -24,6 +24,7 @@ type Project struct {
 	ID                int
 	Name              string
 	PathWithNamespace string
+	Namespace         string
 	WebURL            string
 }
 

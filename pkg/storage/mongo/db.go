@@ -29,6 +29,7 @@ func (m *DB) SaveProjects(p []*collector.Project) {
 			ProjectID:         proj.ID,
 			Name:              proj.Name,
 			PathWithNamespace: proj.PathWithNamespace,
+			Namespace:         proj.Namespace,
 			WebURL:            proj.WebURL,
 		}
 
@@ -53,6 +54,7 @@ type Project struct {
 	ProjectID         int                `bson:"project_id"`
 	Name              string             `bson:"name"`
 	PathWithNamespace string             `bson:"path_with_namespace"`
+	Namespace         string             `bson:"namespace"`
 	WebURL            string             `bson:"web_url"`
 	GroupName         string             `bson:"group_name"`
 }
@@ -86,6 +88,7 @@ func (m *DB) UpdateProject(p Project) {
 			"project_id":          p.ProjectID,
 			"name":                p.Name,
 			"path_with_namespace": p.PathWithNamespace,
+			"namespace":           p.Namespace,
 			"web_url":             p.WebURL,
 		},
 	}

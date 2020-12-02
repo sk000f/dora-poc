@@ -75,6 +75,7 @@ func (g *GitLab) GetProjects(client *gl.Client, opt *gl.ListProjectsOptions) ([]
 				ID:                pr.ID,
 				Name:              pr.Name,
 				PathWithNamespace: pr.PathWithNamespace,
+				Namespace:         pr.Namespace.FullPath,
 				WebURL:            pr.WebURL,
 			})
 		}
