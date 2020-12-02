@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"sync"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -49,6 +50,8 @@ func (m *DB) SaveDeployment(d *collector.Deployment) {
 		ProjectPath:      d.ProjectPath,
 		ProjectNamespace: d.ProjectNamespace,
 		PipelineID:       d.PipelineID,
+		FinishedAt:       d.FinishedAt,
+		Duration:         d.Duration,
 	}
 	m.UpdateDeployment(mD)
 }
@@ -76,6 +79,8 @@ type Deployment struct {
 	ProjectPath      string             `bson:"project_path"`
 	ProjectNamespace string             `bson:"project_namespace"`
 	PipelineID       int                `bson:"pipeline_id"`
+	FinishedAt       *time.Time         `bson:"finished_at"`
+	Duration         float64            `bson:"duration"`
 }
 
 // UpdateProject adds or updates the specified project in the MongoDB database
@@ -130,6 +135,8 @@ func (m *DB) UpdateDeployment(d Deployment) {
 			"project_path":      d.ProjectPath,
 			"project_namespace": d.ProjectNamespace,
 			"pipeline_id":       d.PipelineID,
+			"finished_at":       d.FinishedAt,
+			"duration":          d.Duration,
 		},
 	}
 	_, err = collection.UpdateOne(context.TODO(), filter, update, updateOpts)

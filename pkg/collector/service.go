@@ -1,6 +1,9 @@
 package collector
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 // Service provides functionality for updating CI data
 type Service struct {
@@ -39,6 +42,8 @@ type Deployment struct {
 	ProjectPath      string
 	ProjectNamespace string
 	PipelineID       int
+	FinishedAt       *time.Time
+	Duration         float64
 }
 
 // NewService creates a collector with required dependencies

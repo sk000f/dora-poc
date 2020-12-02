@@ -120,6 +120,8 @@ func (g *GitLab) GetDeployments(p *collector.Project, client *gl.Client, opt *gl
 					ProjectPath:      p.Path,
 					ProjectNamespace: p.Namespace,
 					PipelineID:       dep.Deployable.Pipeline.ID,
+					FinishedAt:       dep.Deployable.FinishedAt,
+					Duration:         dep.Deployable.Duration,
 				})
 			}
 

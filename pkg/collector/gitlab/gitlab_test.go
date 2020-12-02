@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/sk000f/metrix/pkg/collector"
 	"github.com/sk000f/metrix/pkg/collector/gitlab"
@@ -194,6 +195,8 @@ func TestGitLabDeployments(t *testing.T) {
 					"name": "production"
 				}, 
 				"deployable": { 
+					"finished_at": "2020-10-06T15:30:53.355Z",
+					"duration": 123.45,
 					"pipeline": {
 						"id": 1
 					}
@@ -211,6 +214,11 @@ func TestGitLabDeployments(t *testing.T) {
 			WebURL:            "http://test.com/test/test",
 		}
 
+		timestamp, e := time.Parse(time.RFC3339, "2020-10-06T15:30:53.355Z")
+		if e != nil {
+			t.Errorf(e.Error())
+		}
+
 		want := []*collector.Deployment{{
 			ID:               1,
 			Status:           "success",
@@ -220,6 +228,8 @@ func TestGitLabDeployments(t *testing.T) {
 			ProjectPath:      "test",
 			ProjectNamespace: "test/test",
 			PipelineID:       1,
+			FinishedAt:       &timestamp,
+			Duration:         123.45,
 		}}
 
 		got, err := g.GetDeployments(p, client, getDeploymentListOptions())
@@ -250,6 +260,8 @@ func TestGitLabDeployments(t *testing.T) {
 							"name": "production"
 							},
 							"deployable": {
+								"finished_at": "2020-10-06T15:30:53.355Z",
+								"duration": 123.45,
 								"pipeline": {
 									"id": 1
 								}
@@ -269,6 +281,8 @@ func TestGitLabDeployments(t *testing.T) {
 							"name": "production"
 							},
 							"deployable": {
+								"finished_at": "2020-10-06T15:30:53.355Z",
+								"duration": 123.45,
 								"pipeline": {
 									"id": 2
 								}
@@ -287,6 +301,11 @@ func TestGitLabDeployments(t *testing.T) {
 			WebURL:            "http://test.com/test/test",
 		}
 
+		timestamp, e := time.Parse(time.RFC3339, "2020-10-06T15:30:53.355Z")
+		if e != nil {
+			t.Errorf(e.Error())
+		}
+
 		want := []*collector.Deployment{
 			{
 				ID:               1,
@@ -297,6 +316,8 @@ func TestGitLabDeployments(t *testing.T) {
 				ProjectPath:      "test",
 				ProjectNamespace: "test/test",
 				PipelineID:       1,
+				FinishedAt:       &timestamp,
+				Duration:         123.45,
 			},
 			{
 				ID:               2,
@@ -307,6 +328,8 @@ func TestGitLabDeployments(t *testing.T) {
 				ProjectPath:      "test",
 				ProjectNamespace: "test/test",
 				PipelineID:       2,
+				FinishedAt:       &timestamp,
+				Duration:         123.45,
 			},
 		}
 
@@ -335,6 +358,8 @@ func TestGitLabDeployments(t *testing.T) {
 							"name": "production"
 						},
 						"deployable": {
+							"finished_at": "2020-10-06T15:30:53.355Z",
+							"duration": 123.45,
 							"pipeline": {
 								"id": 1
 							}
@@ -347,6 +372,8 @@ func TestGitLabDeployments(t *testing.T) {
 							"name": "staging"
 						},
 						"deployable": {
+							"finished_at": "2020-10-06T15:30:53.355Z",
+							"duration": 123.45,
 							"pipeline": {
 								"id": 2
 							}
@@ -359,6 +386,8 @@ func TestGitLabDeployments(t *testing.T) {
 							"name": "production"
 						},
 						"deployable": {
+							"finished_at": "2020-10-06T15:30:53.355Z",
+							"duration": 123.45,
 							"pipeline": {
 								"id": 3
 							}
@@ -376,6 +405,11 @@ func TestGitLabDeployments(t *testing.T) {
 			WebURL:            "http://test.com/test/test",
 		}
 
+		timestamp, e := time.Parse(time.RFC3339, "2020-10-06T15:30:53.355Z")
+		if e != nil {
+			t.Errorf(e.Error())
+		}
+
 		want := []*collector.Deployment{
 			{
 				ID:               1,
@@ -386,6 +420,8 @@ func TestGitLabDeployments(t *testing.T) {
 				ProjectPath:      "test",
 				ProjectNamespace: "test/test",
 				PipelineID:       1,
+				FinishedAt:       &timestamp,
+				Duration:         123.45,
 			},
 			{
 				ID:               3,
@@ -396,6 +432,8 @@ func TestGitLabDeployments(t *testing.T) {
 				ProjectPath:      "test",
 				ProjectNamespace: "test/test",
 				PipelineID:       3,
+				FinishedAt:       &timestamp,
+				Duration:         123.45,
 			}}
 
 		got, err := g.GetDeployments(p, client, getDeploymentListOptions())
@@ -421,6 +459,8 @@ func TestGitLabDeployments(t *testing.T) {
 							"name": "production"
 						},
 						"deployable": {
+							"finished_at": "2020-10-06T15:30:53.355Z",
+							"duration": 123.45,
 							"pipeline": {
 								"id": 1
 							}
@@ -433,6 +473,8 @@ func TestGitLabDeployments(t *testing.T) {
 							"name": "production"
 						},
 						"deployable": {
+							"finished_at": "2020-10-06T15:30:53.355Z",
+							"duration": 123.45,
 							"pipeline": {
 								"id": 2
 							}
@@ -445,6 +487,8 @@ func TestGitLabDeployments(t *testing.T) {
 							"name": "production"
 						},
 						"deployable": {
+							"finished_at": "2020-10-06T15:30:53.355Z",
+							"duration": 123.45,
 							"pipeline": {
 								"id": 3
 							}
@@ -462,6 +506,11 @@ func TestGitLabDeployments(t *testing.T) {
 			WebURL:            "http://test.com/test/test",
 		}
 
+		timestamp, e := time.Parse(time.RFC3339, "2020-10-06T15:30:53.355Z")
+		if e != nil {
+			t.Errorf(e.Error())
+		}
+
 		want := []*collector.Deployment{
 			{
 				ID:               1,
@@ -472,6 +521,8 @@ func TestGitLabDeployments(t *testing.T) {
 				ProjectPath:      "test",
 				ProjectNamespace: "test/test",
 				PipelineID:       1,
+				FinishedAt:       &timestamp,
+				Duration:         123.45,
 			},
 			{
 				ID:               3,
@@ -482,6 +533,8 @@ func TestGitLabDeployments(t *testing.T) {
 				ProjectPath:      "test",
 				ProjectNamespace: "test/test",
 				PipelineID:       3,
+				FinishedAt:       &timestamp,
+				Duration:         123.45,
 			}}
 
 		got, err := g.GetDeployments(p, client, getDeploymentListOptions())
@@ -507,6 +560,8 @@ func TestGitLabDeployments(t *testing.T) {
 						"name": "production"
 						},
 						"deployable": {
+							"finished_at": "2020-10-06T15:30:53.355Z",
+							"duration": 123.45,
 							"pipeline": {
 								"id": 1
 							}
@@ -526,6 +581,11 @@ func TestGitLabDeployments(t *testing.T) {
 				WebURL:            "http://test.com/test/test",
 			}}
 
+		timestamp, e := time.Parse(time.RFC3339, "2020-10-06T15:30:53.355Z")
+		if e != nil {
+			t.Errorf(e.Error())
+		}
+
 		want := []*collector.Deployment{{
 			ID:               1,
 			Status:           "success",
@@ -535,6 +595,8 @@ func TestGitLabDeployments(t *testing.T) {
 			ProjectPath:      "test",
 			ProjectNamespace: "test/test",
 			PipelineID:       1,
+			FinishedAt:       &timestamp,
+			Duration:         123.45,
 		}}
 
 		g.UpdateDeployments(p, client, mockRepository)
