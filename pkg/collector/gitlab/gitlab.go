@@ -74,7 +74,7 @@ func (g *GitLab) GetProjects(client *gl.Client, opt *gl.ListProjectsOptions) ([]
 			p = append(p, &collector.Project{
 				ID:                pr.ID,
 				Name:              pr.Name,
-				NameWithNamespace: pr.NameWithNamespace,
+				PathWithNamespace: pr.PathWithNamespace,
 				WebURL:            pr.WebURL,
 			})
 		}

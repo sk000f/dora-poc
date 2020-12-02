@@ -22,7 +22,7 @@ func TestGitLabProjects(t *testing.T) {
 			fmt.Fprint(w, `[{
 					"id": 1, 
 					"name": "test", 
-					"name_with_namespace": "test/test", 
+					"path_with_namespace": "test/test", 
 					"web_url": "http://test.com/test/test"
 					}]`)
 		})
@@ -31,7 +31,7 @@ func TestGitLabProjects(t *testing.T) {
 			{
 				ID:                1,
 				Name:              "test",
-				NameWithNamespace: "test/test",
+				PathWithNamespace: "test/test",
 				WebURL:            "http://test.com/test/test",
 			}}
 
@@ -58,7 +58,7 @@ func TestGitLabProjects(t *testing.T) {
 				fmt.Fprint(w, `[{
 					"id": 1, 
 					"name": "test", 
-					"name_with_namespace": "test/test", 
+					"path_with_namespace": "test/test", 
 					"web_url": "http://test.com/test/test"}
 				]`)
 			}
@@ -71,13 +71,13 @@ func TestGitLabProjects(t *testing.T) {
 				{
 					"id": 2, 
 					"name": "test", 
-					"name_with_namespace": "test/test", 
+					"path_with_namespace": "test/test", 
 					"web_url": "http://test.com/test/test"
 				},
 				{
 					"id": 3, 
 					"name": "test", 
-					"name_with_namespace": "test/test", 
+					"path_with_namespace": "test/test", 
 					"web_url": "http://test.com/test/test"
 				}
 				]`)
@@ -88,19 +88,19 @@ func TestGitLabProjects(t *testing.T) {
 			{
 				ID:                1,
 				Name:              "test",
-				NameWithNamespace: "test/test",
+				PathWithNamespace: "test/test",
 				WebURL:            "http://test.com/test/test",
 			},
 			{
 				ID:                2,
 				Name:              "test",
-				NameWithNamespace: "test/test",
+				PathWithNamespace: "test/test",
 				WebURL:            "http://test.com/test/test",
 			},
 			{
 				ID:                3,
 				Name:              "test",
-				NameWithNamespace: "test/test",
+				PathWithNamespace: "test/test",
 				WebURL:            "http://test.com/test/test",
 			},
 		}
@@ -126,7 +126,7 @@ func TestGitLabProjects(t *testing.T) {
 			fmt.Fprint(w, `[{
 					"id": 1, 
 					"name": "test", 
-					"name_with_namespace": "test/test", 
+					"path_with_namespace": "test/test", 
 					"web_url": "http://test.com/test/test"
 					}]`)
 		})
@@ -137,7 +137,7 @@ func TestGitLabProjects(t *testing.T) {
 			{
 				ID:                1,
 				Name:              "test",
-				NameWithNamespace: "test/test",
+				PathWithNamespace: "test/test",
 				WebURL:            "http://test.com/test/test",
 			}}
 
@@ -174,7 +174,7 @@ func TestGitLabDeployments(t *testing.T) {
 		p := &collector.Project{
 			ID:                1,
 			Name:              "test",
-			NameWithNamespace: "test/test",
+			PathWithNamespace: "test/test",
 			WebURL:            "http://test.com/test/test",
 		}
 
@@ -244,7 +244,7 @@ func TestGitLabDeployments(t *testing.T) {
 		p := &collector.Project{
 			ID:                1,
 			Name:              "test",
-			NameWithNamespace: "test/test",
+			PathWithNamespace: "test/test",
 			WebURL:            "http://test.com/test/test",
 		}
 
@@ -323,7 +323,7 @@ func TestGitLabDeployments(t *testing.T) {
 		p := &collector.Project{
 			ID:                1,
 			Name:              "test",
-			NameWithNamespace: "test/test",
+			PathWithNamespace: "test/test",
 			WebURL:            "http://test.com/test/test",
 		}
 
@@ -399,7 +399,7 @@ func TestGitLabDeployments(t *testing.T) {
 		p := &collector.Project{
 			ID:                1,
 			Name:              "test",
-			NameWithNamespace: "test/test",
+			PathWithNamespace: "test/test",
 			WebURL:            "http://test.com/test/test",
 		}
 
@@ -453,7 +453,7 @@ func TestGitLabDeployments(t *testing.T) {
 			{
 				ID:                1,
 				Name:              "test",
-				NameWithNamespace: "test/test",
+				PathWithNamespace: "test/test",
 				WebURL:            "http://test.com/test/test",
 			}}
 
