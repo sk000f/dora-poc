@@ -33,6 +33,7 @@ type Deployment struct {
 	ID               int
 	Status           string
 	EnvironmentName  string
+	ProjectID        int
 	ProjectName      string
 	ProjectNamespace string
 	PipelineID       int

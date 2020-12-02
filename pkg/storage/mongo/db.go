@@ -43,6 +43,7 @@ func (m *DB) SaveDeployment(d *collector.Deployment) {
 		DeploymentID:     d.ID,
 		Status:           d.Status,
 		EnvironmentName:  d.EnvironmentName,
+		ProjectID:        d.ProjectID,
 		ProjectName:      d.ProjectName,
 		ProjectNamespace: d.ProjectNamespace,
 		PipelineID:       d.PipelineID,
@@ -67,6 +68,7 @@ type Deployment struct {
 	DeploymentID     int                `bson:"deployment_id"`
 	Status           string             `bson:"status"`
 	EnvironmentName  string             `bson:"envrionment_name"`
+	ProjectID        int                `bson:"project_id"`
 	ProjectName      string             `bson:"project_name"`
 	ProjectNamespace string             `bson:"project_namespace"`
 	PipelineID       int                `bson:"pipeline_id"`
@@ -118,6 +120,7 @@ func (m *DB) UpdateDeployment(d Deployment) {
 			"deployment_id":     d.DeploymentID,
 			"status":            d.Status,
 			"environment_name":  d.EnvironmentName,
+			"project_id":        d.ProjectID,
 			"project_name":      d.ProjectName,
 			"project_namespace": d.ProjectNamespace,
 			"pipeline_id":       d.PipelineID,

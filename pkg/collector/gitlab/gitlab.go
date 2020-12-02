@@ -114,6 +114,7 @@ func (g *GitLab) GetDeployments(p *collector.Project, client *gl.Client, opt *gl
 					ID:               dep.ID,
 					Status:           dep.Status,
 					EnvironmentName:  dep.Environment.Name,
+					ProjectID:        p.ID,
 					ProjectName:      p.Name,
 					ProjectNamespace: p.Namespace,
 					PipelineID:       dep.Deployable.Pipeline.ID,
