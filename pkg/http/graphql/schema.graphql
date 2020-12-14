@@ -1,0 +1,47 @@
+scalar DateTime
+
+input DateRange {
+  start: DateTime!
+  end: DateTime!
+}
+
+type Deployment {
+  ID: ID!
+  deploymentID: Int!
+  status: String!
+  environmentName: String!
+  projectID: Int!
+  projectName: String!
+  projectGroupName: String!
+  finishedAt: DateTime!
+  duration: Int!
+  deploymentFrequency(
+    dateRange: DateRange
+    projectName: String
+    groupName: String
+  ): Int!
+  changeFailRate(
+    dateRange: DateRange
+    projectName: String
+    groupName: String
+  ): Int!
+  meanTimeToRecover(
+    dateRange: DateRange
+    projectName: String
+    groupName: String
+  ): Int!
+  changeLeadTime(
+    dateRange: DateRange
+    projectName: String
+    groupName: String
+  ): Int!
+}
+
+type Project {
+  ID: ID!
+  projectID: String!
+  name: String!
+  groupName: String!
+  allProjectNames(): [String]
+  allProjectGroupNames(): [String]
+}
