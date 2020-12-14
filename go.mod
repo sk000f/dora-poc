@@ -3,6 +3,7 @@ module github.com/sk000f/metrix
 go 1.13
 
 require (
+	github.com/99designs/gqlgen v0.13.0 // indirect
 	github.com/aws/aws-sdk-go v1.36.0 // indirect
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/golang/snappy v0.0.2 // indirect
