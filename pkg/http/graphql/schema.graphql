@@ -42,6 +42,6 @@ type Project {
   projectID: String!
   name: String!
   groupName: String!
-  allProjectNames(): [String]
-  allProjectGroupNames(): [String]
+  allProjectNames: [String]
+  allProjectGroupNames: [String]
 }
