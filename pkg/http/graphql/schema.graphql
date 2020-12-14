@@ -15,6 +15,18 @@ type Deployment {
   projectGroupName: String!
   finishedAt: DateTime!
   duration: Int!
+}
+
+type Project {
+  ID: ID!
+  projectID: String!
+  name: String!
+  groupName: String!
+}
+
+type Query {
+  allProjectNames: [String]
+  allProjectGroupNames: [String]
   deploymentFrequency(
     dateRange: DateRange
     projectName: String
@@ -35,13 +47,4 @@ type Deployment {
     projectName: String
     groupName: String
   ): Int!
-}
-
-type Project {
-  ID: ID!
-  projectID: String!
-  name: String!
-  groupName: String!
-  allProjectNames: [String]
-  allProjectGroupNames: [String]
 }
